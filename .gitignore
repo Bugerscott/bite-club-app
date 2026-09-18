@@ -1,0 +1,14 @@
+# Cada subproyecto tiene su propio .gitignore específico (mobile/, admin/, api/).
+# Este cubre lo transversal al repo completo.
+
+node_modules/
+.DS_Store
+*.log
+.env
+.env.local
+.env.*.local
+
+# Editor
+.vscode/*
+!.vscode/extensions.json
+.idea/
