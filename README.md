@@ -28,7 +28,7 @@ Inicio | Club | Pedir | Ofertas | Más — pantallas placeholder todavía, sin d
 
 ## Requisitos previos en tu PC
 
-- [Node.js LTS](https://nodejs.org/) (v20 o superior)
+- [Node.js](https://nodejs.org/) **22.13.x o superior**, compatible con Expo SDK 57
 - Git
 - Cuenta de Expo (`npx expo login`)
 - La app **Expo Go** en tu teléfono (para probar sin compilar) — disponible en App Store / Google Play
@@ -61,10 +61,14 @@ Esto abre un QR en la terminal. Escanéalo con la app **Expo Go** en tu teléfon
 o con la cámara (iOS) para ver la app corriendo en vivo, sin compilar nada.
 
 > **Nota sobre versiones:** este scaffold se generó en un entorno sin acceso al registro
-> de npm, así que las versiones en `mobile/package.json` son un punto de partida
-> razonable para Expo SDK 57, no verificado contra el registro real. El paso 3
-> (`npx expo install --fix`) y el paso 4 (`npx expo-doctor`) son los que confirman y
-> corrigen las versiones exactas en tu máquina.
+> de npm. Las versiones que sí quedaron fijadas en `mobile/package.json` (`expo ~57.0.0`,
+> `react 19.2.3`, `react-native 0.86.0`) son las que tú confirmaste como referencia oficial
+> de Expo SDK 57 — **no se inventaron**. El resto de paquetes del ecosistema Expo
+> (`expo-router`, `expo-status-bar`, `expo-constants`, `expo-linking`,
+> `expo-splash-screen`, `expo-secure-store`, `react-native-safe-area-context`,
+> `react-native-screens`, `babel-preset-expo`, `@types/react`, `eslint-config-expo`)
+> quedaron deliberadamente como `"*"` en vez de un número inventado — se resuelven en
+> tu máquina con el paso 3. Detalle completo en `docs/decisiones-tecnicas.md`.
 
 ## Conexión con Supabase existente
 
