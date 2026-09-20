@@ -13,6 +13,8 @@
 | 2026-09-18 | Navegación con nombres propios: Inicio, Club, Pedir, Ofertas, Más | Sin nomenclatura ni referencias de ninguna marca de terceros. |
 | 2026-09-18 | Requisito de Node.js: 22.13.x o superior | Mínimo compatible con Expo SDK 57, según referencia oficial confirmada por el usuario. |
 | 2026-09-18 | `app.json`: splash configurado vía plugin `expo-splash-screen` | La clave raíz `"splash"` es la configuración heredada de SDKs anteriores; SDK 57 usa el plugin. Mismos assets placeholder, sin romper rutas. |
+| 2026-09-20 | Iconografía: `@expo/vector-icons` (familia Feather) | Estándar del ecosistema Expo, ya viene incluido en el paquete `expo`; evita depender de SVGs custom para iconos genéricos de UI (casa, estrella, bolsa, etc.). Nueva dependencia explícita, documentada en package.json. |
+| 2026-09-20 | Carga de fuentes: `expo-font` (vía hook `useAppFonts`) | Necesario para activar Gliker/Gotham cuando existan los archivos reales; el hook está preparado pero NO activa `useFonts()` todavía (ver `src/hooks/useAppFonts.ts`) para no romper Metro con `require()` de archivos inexistentes. |
 
 ## Versiones de dependencias de Expo SDK 57 — origen de cada número
 
@@ -40,6 +42,8 @@ Este scaffold se generó en un entorno **sin acceso al registro de npm** (confir
 | `babel-preset-expo` | Ligado al SDK; no verificable sin registro |
 | `@types/react` | Debe alinear con `react@19.2.3`, pero el patch exacto no es verificable sin registro |
 | `eslint-config-expo` | Ligado al SDK; además SDK 57 puede preferir `npx expo lint` para scaffolding — confirmar en tu PC |
+| `@expo/vector-icons` | Se distribuye junto con `expo`; versión exacta ligada al SDK, no verificable sin registro |
+| `expo-font` | Ligado al SDK; no verificable sin registro |
 
 **Cómo resolver el grupo B en tu PC** (después de `npm install`, que instalará la última
 versión publicada de cada uno por el `"*"`):
@@ -55,6 +59,7 @@ Expo SDK 57 espera. Si algún paquete individual da problema, se puede forzar un
 npx expo install expo-router
 npx expo install expo-status-bar expo-constants expo-linking expo-splash-screen expo-secure-store
 npx expo install react-native-safe-area-context react-native-screens
+npx expo install @expo/vector-icons expo-font
 ```
 
 Después, verificar todo con:

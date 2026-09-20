@@ -1,17 +1,28 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { Text, StyleSheet } from 'react-native';
+import { Screen } from '../../src/components';
+import { colors, typography, spacing } from '../../src/theme';
 
 // Placeholder — Club (puntos y recompensas). Diseño pendiente.
 export default function ClubScreen() {
   return (
-    <View style={styles.container}>
+    <Screen>
       <Text style={styles.title}>Club</Text>
       <Text style={styles.subtitle}>Pantalla pendiente de diseño</Text>
-    </View>
+    </Screen>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: 8 },
-  title: { fontSize: 20, fontWeight: '600' },
-  subtitle: { fontSize: 14, color: '#666' },
+  title: {
+    fontFamily: typography.h1.fontFamily,
+    fontSize: typography.h1.fontSize,
+    color: colors.text,
+    marginTop: spacing.xl,
+  },
+  subtitle: {
+    fontFamily: typography.body.fontFamily,
+    fontSize: typography.body.fontSize,
+    color: colors.muted,
+    marginTop: spacing.xs,
+  },
 });

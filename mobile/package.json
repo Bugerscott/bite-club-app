@@ -22,6 +22,8 @@
     "expo-linking": "*",
     "expo-splash-screen": "*",
     "expo-secure-store": "*",
+    "expo-font": "*",
+    "@expo/vector-icons": "*",
     "react": "19.2.3",
     "react-dom": "19.2.3",
     "react-native": "0.86.0",
