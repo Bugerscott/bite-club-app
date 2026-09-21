@@ -1,24 +1,28 @@
 import { View } from 'react-native';
 import { Tabs } from 'expo-router';
 import { Feather } from '@expo/vector-icons';
-import { colors, sizes } from '../../src/theme';
+import { colors, spacing, typography } from '../../src/theme';
 import { Badge } from '../../src/components';
 import { useCart } from '../../src/state';
 
-// Navegación oficial de Bite Club: Inicio | Club | Pedir | Ofertas | Más
-// Iconos Feather (@expo/vector-icons) — activo colors.primary, inactivo colors.secondary,
-// por instrucciones (sección "13. BOTTOM NAVIGATION"). SafeArea la maneja Tabs por defecto.
+/** Navegación oficial: Inicio | Club | Pedir | Ofertas | Más. */
 export default function TabsLayout() {
   const { itemCount } = useCart();
 
   return (
     <Tabs
       screenOptions={{
-        headerShown: true,
+        headerShown: false,
         tabBarActiveTintColor: colors.primary,
         tabBarInactiveTintColor: colors.secondary,
-        tabBarStyle: { height: sizes.touchTargetMin + 40 },
-        tabBarLabelStyle: { fontSize: 11 },
+        tabBarStyle: {
+          paddingTop: spacing.xs,
+        },
+        tabBarLabelStyle: {
+          fontFamily: typography.navLabel.fontFamily,
+          fontSize: typography.navLabel.fontSize,
+          lineHeight: typography.navLabel.lineHeight,
+        },
       }}
     >
       <Tabs.Screen

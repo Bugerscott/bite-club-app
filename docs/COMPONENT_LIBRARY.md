@@ -1,167 +1,46 @@
 # Component Library — Bite Club
 
-Todos los componentes viven en `mobile/src/components/`, con barrel export en
-`mobile/src/components/index.ts`. Todos importan tokens desde `../theme` — cero
-valores hardcodeados. Este documento resume props y uso; el código fuente es la
-referencia definitiva.
+Componentes compartidos en `mobile/src/components/`.
 
-## Layout / estructura
+## Base
 
-### `Screen`
-Contenedor base de pantalla: SafeArea + fondo + padding horizontal estándar.
-- `children: ReactNode`
-- `scroll?: boolean` — envuelve en `ScrollView` (default `false`)
-- `edges?: Edge[]` — default `['top', 'left', 'right']`
-- `contentStyle?: StyleProp<ViewStyle>`
+- `Screen`: SafeArea + padding estándar; soporta scroll.
+- `Divider`: separador reutilizable.
+- `SectionHeader`: título de sección + acción opcional.
+- `Button`: primary, secondary y ghost; loading/disabled.
+- `IconButton`: botón circular 44×44 con Feather.
+- `Badge`: contador pequeño, usado en carrito.
+- `SplashVideoScreen`: reproduce `splash-animation.mp4` una vez y coordina el cambio desde el splash nativo.
 
-### `Divider`
-Línea divisoria sutil (`colors.divider`, 1px), oculta a accesibilidad.
-- `style?: StyleProp<ViewStyle>`
+## Contenido
 
-### `SectionHeader`
-Título de sección + subtítulo opcional + acción de texto opcional ("Ver más").
-- `title: string`
-- `subtitle?: string`
-- `actionLabel?: string`
-- `onActionPress?: () => void`
-
-## Botones
-
-### `Button`
-Botón principal. Variantes: `primary` (fondo rojo), `secondary` (borde rojo,
-fondo blanco), `ghost` (sin fondo/borde). Disabled solo vía `opacity`.
-- `label: string`
-- `onPress: () => void`
-- `variant?: 'primary' | 'secondary' | 'ghost'` (default `'primary'`)
-- `disabled?: boolean`
-- `loading?: boolean` — reemplaza el label por spinner
-- `accessibilityLabel?: string`
-- `style?: StyleProp<ViewStyle>`
-
-### `IconButton`
-Botón circular de ícono, 44×44 (`sizes.iconButton`). Usa Feather.
-- `name: Feather icon name`
-- `onPress: () => void`
-- `accessibilityLabel: string` (requerido)
-- `disabled?: boolean`
-- `filled?: boolean` — fondo circular visible (para íconos sobre imágenes)
-- `style?: StyleProp<ViewStyle>`
-
-## Contenido / datos
-
-### `PriceBadge`
-Muestra un precio formateado (`C$`) o `—` si `price` es `null`. Opcionalmente
-muestra un precio anterior tachado.
-- `price: number | null`
-- `originalPrice?: number | null`
-
-### `CategoryChip`
-Chip de filtro/categoría, pill. Estado `selected` con fondo `primary`.
-- `label: string`
-- `selected?: boolean`
-- `onPress: () => void`
-
-### `QuantityStepper`
-Selector +/- de cantidad (para futura pantalla de Producto/Carrito).
-- `quantity: number`
-- `onIncrease: () => void`
-- `onDecrease: () => void`
-- `min?: number` (default 1)
-- `max?: number` (default 99)
+- `PriceBadge`: precio en Córdobas.
+- `CategoryChip`: filtro de categorías.
+- `QuantityStepper`: cantidad +/-.
 
 ## Cards
 
-### `ProductCard`
-Card de producto del menú: imagen, nombre, descripción corta, precio, badge
-opcional (`nuevo`/`popular`), overlay de "No disponible" si `available: false`.
-- `product: Product`
-- `onPress?: () => void`
-- `imageSource?: { uri: string } | number | null`
-
-### `PromoCard`
-Card de oferta/promoción: imagen, título, descripción, precio con precio
-anterior tachado, overlay de "Vencida" si `active: false`.
-- `offer: PromoOffer`
-- `onPress?: () => void`
-- `imageSource?: { uri: string } | number | null`
-
-### `RewardCard`
-Card de recompensa: imagen, nombre, costo en puntos (`colors.reward`), estado
-(`available`/`locked`/`redeemed`) — solo interactiva si `available`.
-- `reward: RewardItem`
-- `onPress?: () => void`
-- `imageSource?: { uri: string } | number | null`
-
-### `HeroBanner`
-Banner destacado grande (carrusel de Inicio): imagen de fondo, overlay oscuro,
-título y subtítulo.
-- `title: string`
-- `subtitle?: string`
-- `onPress?: () => void`
-- `imageSource?: { uri: string } | number | null`
-
-### `PointsCard`
-Card de saldo de puntos (pantalla Club): valor grande, barra de progreso
-opcional hacia el próximo hito.
-- `pointsBalance: number`
-- `nextMilestone?: number | null`
-
-### `MemberCard`
-Card de identidad del miembro (pantalla Club): avatar, nombre, fecha de
-membresía formateada.
-- `member: MockMember`
-
-### `Badge`
-Badge numérico pequeño, superpuesto sobre otro elemento (ej. contador de
-carrito sobre el ícono de Pedir en la bottom nav).
-- `count: number` — no renderiza nada si `count <= 0`.
+- `ProductCard`: foto, nombre, descripción opcional, precio y estado de disponibilidad. `cardWidth` permite grids responsivos.
+- `PromoCard`: card de promoción.
+- `RewardCard`: recompensa y estado.
+- `HeroBanner`: imagen protagonista, título, subtítulo y `actionLabel` opcional.
+- `PointsCard`: saldo/progreso de puntos.
+- `MemberCard`: información del miembro.
 
 ## Estados
 
-### `EmptyState`
-Estado vacío genérico: ícono, título, descripción opcional, acción opcional.
-- `icon?: Feather icon name` (default `'inbox'`)
-- `title: string`
-- `description?: string`
-- `actionLabel?: string`
-- `onActionPress?: () => void`
+- `EmptyState`
+- `LoadingState`
+- `ErrorState`
 
-### `LoadingState`
-Spinner centrado + label.
-- `label?: string` (default `'Cargando...'`)
+## Features
 
-### `ErrorState`
-Ícono de alerta, título, descripción, botón de reintentar opcional.
-- `title?: string`
-- `description?: string`
-- `retryLabel?: string`
-- `onRetry?: () => void`
+En `mobile/src/features/`:
 
-## Componentes de feature (`mobile/src/features/`)
+- `order/ProductOptionsPicker.tsx`
+- `order/StatusTimeline.tsx`
+- `cart/CartLineItem.tsx`
+- `profile/AddressCard.tsx`
+- `profile/NotificationRow.tsx`
 
-Componentes compuestos, específicos de un flujo, que combinan varios
-componentes de la librería base + lógica local. No están en el barrel de
-`components/` a propósito — viven junto a la pantalla que los usa
-(instrucciones, sección 37: extraer UI compleja a `features/` sin
-sobrefragmentar).
-
-- `features/order/ProductOptionsPicker.tsx` — selector de salsa + checklist de
-  extras, usado en `/product/[id]`.
-- `features/order/StatusTimeline.tsx` — timeline de 5 estados de pedido, usado
-  en `/order-tracking`.
-- `features/cart/CartLineItem.tsx` — fila de carrito (imagen, opciones,
-  stepper, eliminar), usada en `/cart`.
-- `features/profile/AddressCard.tsx` — card de dirección seleccionable/
-  editable, usada en `/addresses` y `/delivery`.
-- `features/profile/NotificationRow.tsx` — fila de notificación leída/no
-  leída, usada en `/notifications`.
-
-## Convenciones comunes
-
-- Todo componente exporta su interfaz de props (`export interface XProps`).
-- Estilos con `StyleSheet.create`, nunca inline salvo composición de arrays.
-- Imágenes: prop `imageSource` opcional; sin ella se renderiza un placeholder
-  de color sólido (`colors.divider`) — todavía no hay mapa de `imageKey` → asset
-  real ni Storage de Supabase conectado.
-- Ningún componente contiene copy comercial, precios inventados ni datos reales
-  — todo contenido de ejemplo vive en `mobile/src/mocks/` con prefijo `[DEV]`.
+Los componentes consumen tokens de `src/theme/`; las imágenes de producto se resuelven únicamente en `src/lib/productImages.ts`.

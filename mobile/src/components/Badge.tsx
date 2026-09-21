@@ -31,8 +31,8 @@ const styles = StyleSheet.create({
   },
   text: {
     fontFamily: typography.micro.fontFamily,
-    fontSize: 10,
-    lineHeight: 12,
+    fontSize: typography.micro.fontSize,
+    lineHeight: typography.micro.lineHeight,
     color: colors.background,
   },
 });

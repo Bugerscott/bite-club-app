@@ -1,9 +1,9 @@
 import React, { useMemo, useState } from 'react';
-import { View, Text, TextInput, StyleSheet, FlatList, Pressable } from 'react-native';
+import { View, Text, TextInput, StyleSheet, FlatList, Pressable, useWindowDimensions } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Feather } from '@expo/vector-icons';
 import { Screen, CategoryChip, ProductCard, EmptyState } from '../../src/components';
-import { colors, spacing, radius, sizes, typography } from '../../src/theme';
+import { colors, spacing, radius, sizes, typography, screenPaddingHorizontal } from '../../src/theme';
 import { mockCategories, mockProducts } from '../../src/mocks';
 import type { MenuCategoryId } from '../../src/types';
 import { formatCurrency } from '../../src/utils';
@@ -15,7 +15,9 @@ import { useCart } from '../../src/state';
 // agregar, carrito, contador.
 export default function OrderScreen() {
   const router = useRouter();
+  const { width } = useWindowDimensions();
   const { itemCount, subtotal } = useCart();
+  const cardWidth = Math.max(120, Math.floor((width - screenPaddingHorizontal * 2 - spacing.sm) / 2));
   const [query, setQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<MenuCategoryId | null>(null);
 
@@ -30,6 +32,7 @@ export default function OrderScreen() {
 
   return (
     <Screen>
+      <Text style={styles.title}>Pedir</Text>
       <View style={styles.searchRow}>
         <Feather name="search" size={18} color={colors.muted} />
         <TextInput
@@ -65,12 +68,13 @@ export default function OrderScreen() {
           keyExtractor={(item) => item.id}
           numColumns={2}
           columnWrapperStyle={styles.gridRow}
-          contentContainerStyle={styles.gridContent}
+          contentContainerStyle={[styles.gridContent, itemCount > 0 && styles.gridContentWithCart]}
           renderItem={({ item }) => (
             <ProductCard
               product={item}
               imageSource={resolveProductImage(item.images[0])}
               onPress={() => router.push({ pathname: '/product/[id]', params: { id: item.id } })}
+              cardWidth={cardWidth}
             />
           )}
         />
@@ -92,6 +96,13 @@ export default function OrderScreen() {
 }
 
 const styles = StyleSheet.create({
+  title: {
+    fontFamily: typography.h1.fontFamily,
+    fontSize: typography.h1.fontSize,
+    lineHeight: typography.h1.lineHeight,
+    color: colors.text,
+    marginTop: spacing.sm,
+  },
   searchRow: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -119,7 +130,10 @@ const styles = StyleSheet.create({
     marginBottom: spacing.sm,
   },
   gridContent: {
-    paddingBottom: spacing.xxxl,
+    paddingBottom: spacing.xl,
+  },
+  gridContentWithCart: {
+    paddingBottom: sizes.ctaHeight + spacing.xxxl,
   },
   cartBar: {
     position: 'absolute',

@@ -35,12 +35,7 @@ export function hexToRgba(hex: string, alpha: number): string {
   return `rgba(${r}, ${g}, ${b}, ${alpha})`;
 }
 
-/**
- * Tonos derivados — DECISIÓN TÉCNICA PENDIENTE DE APROBACIÓN.
- * El usuario dio 4 ejemplos permitidos de rgba (ver instrucciones, sección 3);
- * el resto de estos nombres/alphas son una propuesta razonable siguiendo el
- * mismo patrón, no un valor confirmado explícitamente uno por uno.
- */
+/** Tonos derivados aprobados, siempre generados por opacidad de colores oficiales. */
 const derived = {
   /** Borde estándar de inputs/cards — TEXT al 16% (ejemplo dado por el usuario). */
   border: hexToRgba(official.text, 0.16),

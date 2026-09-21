@@ -42,7 +42,7 @@ export interface Product {
   /** Opciones de salsa (solo "Algo Rico" por ahora). */
   saucesAvailable?: SauceOption[];
   /**
-   * Texto informativo oficial adicional (ej. nota de donación de "Algo Rico").
+   * Texto informativo oficial adicional (ej. nota de donación de Papas Bravas).
    * NO es un slogan — es información puntual del producto, dada textualmente
    * por el usuario. No convertir en claim general de marca.
    */

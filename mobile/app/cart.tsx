@@ -19,7 +19,7 @@ export default function CartScreen() {
         <EmptyState
           icon="shopping-bag"
           title="Tu carrito está vacío"
-          description="Agrega algo rico desde el menú."
+          description="Agrega productos desde el menú."
           actionLabel="Ir al menú"
           onActionPress={() => router.push('/(tabs)/order')}
         />

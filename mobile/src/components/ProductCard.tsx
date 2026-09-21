@@ -7,8 +7,9 @@ import { PriceBadge } from './PriceBadge';
 export interface ProductCardProps {
   product: Product;
   onPress?: () => void;
-  /** Resuelve `imageKey` a una fuente de imagen real. Sin mapa aún → placeholder vacío. */
   imageSource?: { uri: string } | number | null;
+  /** Ancho opcional para grids responsivos. Default: 160 para carruseles horizontales. */
+  cardWidth?: number;
 }
 
 const BADGE_LABEL: Record<NonNullable<Product['badge']>, string> = {
@@ -16,15 +17,18 @@ const BADGE_LABEL: Record<NonNullable<Product['badge']>, string> = {
   popular: 'Popular',
 };
 
-/** Card de producto — instrucciones, sección "18. PRODUCT CARD". */
-export function ProductCard({ product, onPress, imageSource }: ProductCardProps) {
+export function ProductCard({ product, onPress, imageSource, cardWidth = 160 }: ProductCardProps) {
   return (
     <Pressable
       onPress={onPress}
       disabled={!onPress}
       accessibilityRole={onPress ? 'button' : undefined}
       accessibilityLabel={product.name}
-      style={({ pressed }) => [styles.card, pressed && onPress && styles.pressed]}
+      style={({ pressed }) => [
+        styles.card,
+        { width: cardWidth },
+        pressed && onPress && styles.pressed,
+      ]}
     >
       <View style={styles.imageWrap}>
         {imageSource ? (
@@ -46,9 +50,11 @@ export function ProductCard({ product, onPress, imageSource }: ProductCardProps)
       <Text style={styles.name} numberOfLines={1}>
         {product.name}
       </Text>
-      <Text style={styles.description} numberOfLines={2}>
-        {product.description}
-      </Text>
+      {product.description ? (
+        <Text style={styles.description} numberOfLines={2}>
+          {product.description}
+        </Text>
+      ) : null}
       <PriceBadge price={product.price} />
     </Pressable>
   );
@@ -56,7 +62,6 @@ export function ProductCard({ product, onPress, imageSource }: ProductCardProps)
 
 const styles = StyleSheet.create({
   card: {
-    width: 160,
     backgroundColor: colors.background,
     borderRadius: radius.card,
     padding: spacing.sm,
@@ -92,6 +97,7 @@ const styles = StyleSheet.create({
   badgeText: {
     fontFamily: typography.micro.fontFamily,
     fontSize: typography.micro.fontSize,
+    lineHeight: typography.micro.lineHeight,
     color: colors.background,
   },
   unavailableOverlay: {
@@ -103,16 +109,19 @@ const styles = StyleSheet.create({
   unavailableText: {
     fontFamily: typography.caption.fontFamily,
     fontSize: typography.caption.fontSize,
+    lineHeight: typography.caption.lineHeight,
     color: colors.background,
   },
   name: {
     fontFamily: typography.h3.fontFamily,
     fontSize: typography.h3.fontSize,
+    lineHeight: typography.h3.lineHeight,
     color: colors.text,
   },
   description: {
     fontFamily: typography.caption.fontFamily,
     fontSize: typography.caption.fontSize,
+    lineHeight: typography.caption.lineHeight,
     color: colors.muted,
   },
 });

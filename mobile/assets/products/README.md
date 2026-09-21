@@ -1,29 +1,13 @@
-# products/ — Fotografías reales de productos
+# Fotografías de producto
 
-Productos con fotografía real anunciada (fuente: master prompt, sección 8):
+Esta carpeta contiene copias optimizadas para uso móvil. Los masters originales de alta resolución se conservaron fuera del bundle y no fueron sobrescritos.
 
-| Producto | Convención de archivo sugerida | `imageKey` usado en `mocks/products.ts` |
-|---|---|---|
-| B's Bite | `bs-bite-01.jpg` | `bs-bite-01` |
-| Cheesy Bite | `cheesy-bite-01.jpg` | `cheesy-bite-01` |
-| Mediterránea | `mediterranea-01.jpg` | `mediterranea-01` |
-| Mordida Nica | `mordida-nica-01.jpg` … `mordida-nica-04.jpg` (galería amplia — producto estrella) | `mordida-nica-01`…`04` |
-| Sweet Bite | `sweet-bite-01.jpg` | `sweet-bite-01` |
+Fotos disponibles:
 
-⚠️ **Ninguno de estos archivos existe todavía en esta carpeta.** Los
-`imageKey` de arriba ya están cargados en `mocks/products.ts` siguiendo esta
-convención — cuando lleguen los archivos reales, solo hace falta:
+- B's Bite: `bs-bite-01.jpg` a `bs-bite-04.jpg`
+- Cheesy Bite: `cheesy-bite-01.jpg` a `cheesy-bite-04.jpg`
+- Mediterránea: `mediterranea-01.jpg` a `mediterranea-05.jpg`
+- Mordida Nica: `mordida-nica-01.jpg` a `mordida-nica-08.jpg`
+- Sweet Bite: `sweet-bite-01.jpg` a `sweet-bite-04.jpg`
 
-1. Copiar las fotos aquí con estos nombres exactos (si los nombres reales que
-   entregues son distintos, avisar para actualizar `mocks/products.ts` y no
-   perder ningún archivo).
-2. Agregar cada `require()` en `mobile/src/lib/productImages.ts`
-   (`productImageMap`) — es el único lugar donde se resuelven imágenes de
-   producto, así que ningún componente necesita cambios.
-
-El resto de productos del menú (Croqueta Bites, Algo Rico, Papas Bravas,
-milkshakes, postres, bebidas) no tiene fotografía real anunciada todavía —
-usan placeholder visual (`images: []`).
-
-No se usa stock ni imágenes externas. No sobrescribir destructivamente los
-archivos master que se agreguen aquí.
+El mapeo hacia los nombres originales está documentado en `docs/ASSET_MAPPING.md`.

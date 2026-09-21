@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, FlatList } from 'react-native';
+import { View, Text, StyleSheet, FlatList, Image, Pressable } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Feather } from '@expo/vector-icons';
 import {
@@ -15,18 +15,21 @@ import { mockProducts, mockOrders, mockMember } from '../../src/mocks';
 import { formatCurrency } from '../../src/utils';
 import { resolveProductImage } from '../../src/lib/productImages';
 
-// Jerarquía de Inicio (instrucciones, sección 14):
-// Logo -> Hero Mordida Nica -> Club -> Lo más pedido -> Destacado -> Ofertas -> Últimos pedidos
+const biteClubLogo = require('../../assets/brand/Bite-Club-_logo-primary.png');
+
 export default function HomeScreen() {
   const router = useRouter();
-  const starProduct = mockProducts.find((p) => p.starProduct);
-  const secondaryFeatured = mockProducts.find((p) => p.featured && !p.starProduct);
-  const mostOrdered = mockProducts.filter((p) => p.available).slice(0, 6);
+  const starProduct = mockProducts.find((product) => product.starProduct);
+  const secondaryFeatured = mockProducts.find((product) => product.featured && !product.starProduct);
+  const mostOrdered = [
+    ...mockProducts.filter((product) => product.starProduct && product.available),
+    ...mockProducts.filter((product) => !product.starProduct && product.available),
+  ].slice(0, 6);
 
   return (
     <Screen scroll>
       <View style={styles.header}>
-        <Text style={styles.logoText}>Bite Club</Text>
+        <Image source={biteClubLogo} style={styles.logo} resizeMode="contain" accessibilityLabel="Bite Club" />
         <View style={styles.headerActions}>
           <IconButton
             name="bell"
@@ -46,15 +49,21 @@ export default function HomeScreen() {
           <HeroBanner
             title={starProduct.name}
             subtitle="Algo rico"
+            actionLabel="Pedir ahora"
             imageSource={resolveProductImage(starProduct.images[0])}
             onPress={() => router.push({ pathname: '/product/[id]', params: { id: starProduct.id } })}
           />
         </View>
       ) : null}
 
-      <View style={styles.section}>
+      <Pressable
+        onPress={() => router.push('/(tabs)/club')}
+        accessibilityRole="button"
+        accessibilityLabel="Abrir Mi Club"
+        style={styles.section}
+      >
         <PointsCard pointsBalance={mockMember.pointsBalance} nextMilestone={500} />
-      </View>
+      </Pressable>
 
       <View style={styles.section}>
         <SectionHeader
@@ -83,6 +92,7 @@ export default function HomeScreen() {
           <SectionHeader title="Destacado" />
           <ProductCard
             product={secondaryFeatured}
+            cardWidth={200}
             imageSource={resolveProductImage(secondaryFeatured.images[0])}
             onPress={() =>
               router.push({ pathname: '/product/[id]', params: { id: secondaryFeatured.id } })
@@ -94,12 +104,10 @@ export default function HomeScreen() {
       <View style={styles.section}>
         <SectionHeader
           title="Ofertas"
-          actionLabel="Ver todo"
+          actionLabel="Ver todas"
           onActionPress={() => router.push('/(tabs)/offers')}
         />
-        <Text style={styles.mutedText}>
-          Todavía no hay promociones activas — vuelve pronto.
-        </Text>
+        <Text style={styles.mutedText}>No hay ofertas activas.</Text>
       </View>
 
       <View style={styles.section}>
@@ -116,7 +124,7 @@ export default function HomeScreen() {
             <View style={styles.orderBody}>
               <Text style={styles.orderNumber}>{order.orderNumber}</Text>
               <Text style={styles.orderSummary} numberOfLines={1}>
-                {order.items.map((i) => `${i.quantity}x ${i.name}`).join(', ')}
+                {order.items.map((item) => `${item.quantity}x ${item.name}`).join(', ')}
               </Text>
             </View>
             <Text style={styles.orderTotal}>{formatCurrency(order.total)}</Text>
@@ -132,13 +140,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingTop: spacing.base,
+    paddingTop: spacing.sm,
     paddingBottom: spacing.sm,
   },
-  logoText: {
-    fontFamily: typography.display.fontFamily,
-    fontSize: 28,
-    color: colors.primary,
+  logo: {
+    width: 150,
+    height: 60,
   },
   headerActions: {
     flexDirection: 'row',
@@ -149,10 +156,12 @@ const styles = StyleSheet.create({
   },
   horizontalList: {
     gap: spacing.sm,
+    paddingVertical: spacing.xs,
   },
   mutedText: {
     fontFamily: typography.body.fontFamily,
     fontSize: typography.body.fontSize,
+    lineHeight: typography.body.lineHeight,
     color: colors.muted,
   },
   orderRow: {
@@ -176,16 +185,19 @@ const styles = StyleSheet.create({
   orderNumber: {
     fontFamily: typography.h3.fontFamily,
     fontSize: typography.h3.fontSize,
+    lineHeight: typography.h3.lineHeight,
     color: colors.text,
   },
   orderSummary: {
     fontFamily: typography.caption.fontFamily,
     fontSize: typography.caption.fontSize,
+    lineHeight: typography.caption.lineHeight,
     color: colors.muted,
   },
   orderTotal: {
-    fontFamily: typography.h3.fontFamily,
-    fontSize: typography.h3.fontSize,
+    fontFamily: typography.price.fontFamily,
+    fontSize: typography.price.fontSize,
+    lineHeight: typography.price.lineHeight,
     color: colors.primary,
   },
 });

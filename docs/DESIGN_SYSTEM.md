@@ -1,131 +1,94 @@
 # Design System — Bite Club
 
-Fuente de verdad textual del sistema visual. El código vive en `mobile/src/theme/`
-(`colors.ts`, `spacing.ts`, `radius.ts`, `sizes.ts`, `shadows.ts`, `typography.ts`,
-re-exportados desde `mobile/src/theme/index.ts`). Ningún componente o pantalla debe
-usar un color, tamaño, radio o fuente escrito a mano — siempre importar de aquí.
+Fuente de verdad del sistema visual. Los tokens viven en `mobile/src/theme/` y deben reutilizarse en componentes y pantallas.
 
-Slogan oficial de la marca: **"Algo rico"**. No se usa ningún otro slogan en código
-ni documentación.
+Slogan oficial único: **“Algo rico”**.
 
-## 1. Colores oficiales
+## Colores oficiales
 
-| Token | Hex | Uso |
+| Token | Valor | Uso |
 |---|---|---|
-| `primary` | `#E41A17` | CTA principal, botones primarios, navegación activa |
-| `secondary` | `#748DAF` | Navegación inactiva, iconografía de apoyo |
-| `background` | `#FFFFFF` | Fondo principal |
-| `text` | `#53657D` | Títulos, cuerpo, descripciones, labels |
-| `accent` | `#EE761B` | Acentos puntuales, promociones |
-| `reward` | `#EEBD1B` | Puntos, recompensas, fidelización (pantalla Club) |
+| `primary` | `#E41A17` | CTA, navegación activa, marca |
+| `secondary` | `#748DAF` | navegación inactiva, apoyo |
+| `background` | `#FFFFFF` | fondos y superficies |
+| `text` | `#53657D` | texto principal |
+| `accent` | `#EE761B` | acentos puntuales |
+| `reward` | `#EEBD1B` | Club y recompensas |
 
-Estos 6 valores son los únicos HEX permitidos. Cualquier variación (borde, divider,
-texto atenuado, overlay, estado disabled, superficie presionada) se deriva por
-**opacidad** de estos 6 vía `hexToRgba()` — nunca se introduce un HEX nuevo.
+Variaciones de borde, muted, overlay, pressed y disabled se derivan por opacidad mediante `hexToRgba()`; no se agregan HEX de marca nuevos.
 
-| Token derivado | Fórmula | Uso |
-|---|---|---|
-| `border` | `text` @ 16% | Borde estándar de inputs/cards |
-| `divider` | `text` @ 8% | Línea divisoria sutil |
-| `muted` | `text` @ 40% | Texto/ícono atenuado |
-| `disabledSurface` | `text` @ 16% | Fondo disabled (los componentes interactivos usan `opacity`, no este color, como mecanismo principal) |
-| `pressedPrimarySurface` | `primary` @ 10% | Resalte al presionar con acento primario |
-| `overlay` | `text` @ 40% | Scrim de overlays/modales/badges sobre imágenes |
+Derivados aprobados:
 
-⚠️ **Pendiente de aprobación**: de estos 6 derivados, el usuario dio 4 ejemplos exactos
-(`border`, `divider`, `muted`, `pressedPrimarySurface`); `disabledSurface` y `overlay`
-son una propuesta razonable siguiendo el mismo patrón, no confirmados uno por uno.
+- `border`: text al 16%
+- `divider`: text al 8%
+- `muted`: text al 40%
+- `disabledSurface`: text al 16%
+- `pressedPrimarySurface`: primary al 10%
+- `overlay`: text al 40%
 
-## 2. Tipografía
+## Tipografías activas
 
-Familias oficiales (nombres exactos confirmados por el master prompt de Fase
-Frontend 2 — reemplazan los nombres provisionales de Fase 1):
+Archivos reales en `mobile/assets/fonts/` y carga centralizada con `expo-font`:
 
-| Token | Familia | Uso |
-|---|---|---|
-| `fontFamily.display` | GlikerBlack | Logo, display, "Algo rico", promociones |
-| `fontFamily.bold` | GothamBold | H1, H2, títulos importantes |
-| `fontFamily.medium` | GothamMedium | H3, botones, navegación, labels, precios destacados |
-| `fontFamily.book` | GothamBook | Body, ingredientes, descripciones, textos secundarios |
+- `GlikerBlack` → `Gliker-Black.ttf`
+- `GothamBold` → `Gotham-Bold.ttf`
+- `GothamMedium` → `Gotham-Medium.otf`
+- `GothamBook` → `Gotham-Book.otf`
 
-⚠️ Los 4 archivos de fuente reales **no existen todavía** en `mobile/assets/fonts/`
-(`Gotham-Bold.ttf`, `Gotham-Book.otf`, `Gotham-Medium.otf`, `Gliker-Black.ttf`).
-Mientras tanto, React Native cae al font del sistema automáticamente (no rompe nada).
-Ver `mobile/src/hooks/useAppFonts.ts` para el mecanismo de activación futura.
-No usar Gotham Narrow ni sustitutos.
+Uso:
 
-Escala tipográfica (valores exactos, confirmados por el master prompt):
+- Gliker Black: display, “Algo rico”, promociones.
+- Gotham Bold: H1/H2.
+- Gotham Medium: H3, botones, navegación, labels, precios.
+- Gotham Book: body, ingredientes y descripciones.
+
+Escala:
 
 | Token | Familia | Size | Line-height |
-|---|---|---|---|
+|---|---|---:|---:|
 | `display` | GlikerBlack | 40 | 48 |
 | `h1` | GothamBold | 30 | 38 |
 | `h2` | GothamBold | 22 | 28 |
 | `h3` | GothamMedium | 18 | 24 |
 | `body` | GothamBook | 16 | 22 |
 | `caption` | GothamBook | 13 | 18 |
-| `micro` | GothamBook | 11 | 14 |
+| `micro` | GothamMedium | 11 | 14 |
+| `promo` | GlikerBlack | 22 | 28 |
+| `button` | GothamMedium | 16 | 22 |
+| `navLabel` | GothamMedium | 11 | 14 |
+| `price` | GothamMedium | 18 | 24 |
+| `sectionTitle` | GothamBold | 22 | 28 |
 
-## 3. Spacing
+## Spacing
 
-Escala base: `4, 8, 12, 16, 20, 24, 32, 40` → tokens `xs, sm, md, base, lg, xl, xxl, xxxl`.
+Escala: `4, 8, 12, 16, 20, 24, 32, 40`.
 
-- Padding horizontal de pantalla: `spacing.lg` (20) — aplicado por el componente `Screen`.
-- Separación entre secciones: `sectionGap.compact` (16, bloques relacionados) o
-  `sectionGap.standard` (24, entre bloques principales) — decisión por pantalla.
+Padding horizontal principal: 20.
 
-## 4. Radios
+## Radios
 
-| Token | Valor | Uso |
-|---|---|---|
-| `card` | 20 | Card principal |
-| `button` | 16 | Botón |
-| `input` | 16 | Input |
-| `pill` | 999 | Pill/chip |
-| `iconButton` | 999 | Icon button circular (con contenedor 44×44) |
+- Card: 20
+- Button: 16
+- Input: 16
+- Pill: 999
+- Icon button: circular
 
-## 5. Tamaños base
+## Tamaños
 
-| Token | Valor | Uso |
-|---|---|---|
-| `ctaHeight` | 56 | Altura mínima de CTA principal |
-| `iconButton` | 44 | Icon button |
-| `touchTargetMin` | 44 | Target táctil mínimo (accesibilidad) |
+- CTA: 56 px de alto.
+- Icon button: 44×44.
+- Touch target mínimo: 44×44.
 
-## 6. Sombras
+## Fotografía
 
-Una sola sombra suave (`shadows.soft`), reutilizada en todas las cards — nunca una
-sombra distinta por pantalla. iOS: `shadowOpacity 0.08`, `shadowRadius 8`. Android:
-`elevation 2`. `shadows.none` para elementos sin elevación.
+Usar exclusivamente assets oficiales de `mobile/assets/products/`. Mordida Nica es el producto estrella y tiene prioridad visual. No usar stock ni imágenes externas.
 
-## 7. Iconografía
+## Iconografía
 
-`@expo/vector-icons`, familia **Feather** (trazo fino, consistente con el estilo
-general). Activo: `colors.primary`. Inactivo/secundario: `colors.secondary` o
-`colors.text` según contexto. Tamaño estándar de ícono en botón: 20–22px.
+Familia Feather mediante `@expo/vector-icons`. Activo `primary`; inactivo `secondary`.
 
-## 8. Componentes: estados
+## Accesibilidad
 
-Todo componente interactivo soporta, como mínimo:
-
-- **Default** — estilo base.
-- **Pressed** — `opacity` reducida (0.7–0.9 según componente), sin color nuevo.
-- **Disabled** — `opacity: 0.4`, sin color gris nuevo, sin interacción.
-- **Loading** (solo `Button`) — reemplaza el label por `ActivityIndicator`, mismo tamaño.
-
-Estados de pantalla (no de componente individual): `LoadingState`, `EmptyState`,
-`ErrorState` — genéricos, reutilizables en cualquier pantalla futura.
-
-## 9. Accesibilidad
-
-- Todo elemento presionable tiene `accessibilityRole="button"` y
-  `accessibilityLabel` (explícito o heredado del texto visible).
-- Targets táctiles ≥ 44×44 (`sizes.touchTargetMin`).
-- `accessibilityState={{ disabled, selected, busy }}` donde aplica.
-- Elementos puramente decorativos (`Divider`) están ocultos a lectores de pantalla.
-
-## 10. Safe area
-
-El componente `Screen` aplica `SafeAreaView` con `edges: ['top', 'left', 'right']`
-por defecto (el borde inferior lo maneja la bottom navigation). Toda pantalla debe
-envolver su contenido con `Screen` en vez de armar su propio manejo de safe area.
+- Touch targets de al menos 44×44.
+- `accessibilityRole`, `accessibilityLabel` y `accessibilityState` donde corresponda.
+- No depender solo del color para comunicar estados.

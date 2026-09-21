@@ -4,25 +4,25 @@
     "slug": "bite-club-app",
     "version": "0.1.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
+    "icon": "./assets/app/Bite-Club-_icon.png",
     "scheme": "biteclub",
     "userInterfaceStyle": "automatic",
-    "newArchEnabled": true,
     "ios": {
       "supportsTablet": false,
       "bundleIdentifier": "com.biteclub.app"
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "foregroundImage": "./assets/app/Bite-Club-_adaptive-icon.png",
+        "monochromeImage": "./assets/app/Bite-Club-_monochrome-icon.png",
+        "backgroundColor": "#E41A17"
       },
       "package": "com.biteclub.app"
     },
     "web": {
       "bundler": "metro",
       "output": "static",
-      "favicon": "./assets/images/favicon.png"
+      "favicon": "./assets/app/Bite-Club-_favicon.png"
     },
     "plugins": [
       "expo-router",
@@ -30,9 +30,10 @@
       [
         "expo-splash-screen",
         {
-          "image": "./assets/images/splash.png",
+          "image": "./assets/app/Bite-Club-_splash-logo-static.png",
+          "imageWidth": 180,
           "resizeMode": "contain",
-          "backgroundColor": "#ffffff"
+          "backgroundColor": "#FFFFFF"
         }
       ]
     ],

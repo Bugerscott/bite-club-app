@@ -1,20 +1,8 @@
 import type { Product } from '../types';
 import { defaultFoodExtraIds } from './extras';
 
-/**
- * Menú oficial de Bite Club — fuente de verdad: instrucciones del usuario,
- * sección 10 ("MENÚ OFICIAL — FUENTE DE VERDAD"). Nombres, precios y
- * descripciones son textuales, sin inventar combinaciones ni copy adicional.
- *
- * Fotografía real (instrucciones, sección 8): solo B's Bite, Cheesy Bite,
- * Mediterránea, Mordida Nica y Sweet Bite tienen fotografías reales
- * anunciadas. Los `images` de esos 5 productos usan la convención de nombre
- * de archivo sugerida (sección 8) como `imageKey` — los archivos reales
- * TODAVÍA NO existen en mobile/assets/products/ (ver README de esa carpeta).
- * El resto de productos usa `images: []` (placeholder visual) por ahora.
- */
+/** Menú oficial de Bite Club cargado desde el menú proporcionado por el usuario. */
 export const mockProducts: Product[] = [
-  // --- Smash Burgers ---
   {
     id: 'bs-bite',
     name: "B's Bite",
@@ -22,7 +10,7 @@ export const mockProducts: Product[] = [
     description:
       'Pan de papa, 2ble carne smash blend original, 2ble queso, salsa Bite, lechuga, cebolla y pepinillos.',
     price: 330,
-    images: ['bs-bite-01'],
+    images: ['bs-bite-01', 'bs-bite-02', 'bs-bite-03', 'bs-bite-04'],
     featured: false,
     starProduct: false,
     includesFries: true,
@@ -36,7 +24,7 @@ export const mockProducts: Product[] = [
     description:
       'Pan de papa, carne smash blend original, queso, salsa BBQ, bacon y cebolla caramelizada.',
     price: 280,
-    images: ['sweet-bite-01'],
+    images: ['sweet-bite-01', 'sweet-bite-02', 'sweet-bite-03', 'sweet-bite-04'],
     featured: false,
     starProduct: false,
     includesFries: true,
@@ -49,14 +37,13 @@ export const mockProducts: Product[] = [
     categoryId: 'smash-burgers',
     description: 'Pan de papa, carne smash blend original, 2ble queso, salsa Bite y pepinillos.',
     price: 250,
-    images: ['cheesy-bite-01'],
+    images: ['cheesy-bite-01', 'cheesy-bite-02', 'cheesy-bite-03', 'cheesy-bite-04'],
     featured: false,
     starProduct: false,
     includesFries: true,
     available: true,
     extrasAvailable: defaultFoodExtraIds,
   },
-  // --- Especialidades ---
   {
     id: 'mediterranea',
     name: 'Mediterránea',
@@ -64,7 +51,13 @@ export const mockProducts: Product[] = [
     description:
       'Pan de papa, 2ble carne medallón 100g blend original, Aioli de la casa, lechuga, bacon y cebolla caramelizada.',
     price: 400,
-    images: ['mediterranea-01'],
+    images: [
+      'mediterranea-01',
+      'mediterranea-02',
+      'mediterranea-03',
+      'mediterranea-04',
+      'mediterranea-05',
+    ],
     featured: true,
     starProduct: false,
     includesFries: true,
@@ -78,14 +71,22 @@ export const mockProducts: Product[] = [
     description:
       'Pan de papa, 2ble carne medallón 100g blend original, crema cilantro, cuajada seca, cebolla encurtida con chile y bacon.',
     price: 410,
-    images: ['mordida-nica-01', 'mordida-nica-02', 'mordida-nica-03', 'mordida-nica-04'],
+    images: [
+      'mordida-nica-01',
+      'mordida-nica-02',
+      'mordida-nica-03',
+      'mordida-nica-04',
+      'mordida-nica-05',
+      'mordida-nica-06',
+      'mordida-nica-07',
+      'mordida-nica-08',
+    ],
     featured: true,
     starProduct: true,
     includesFries: true,
     available: true,
     extrasAvailable: defaultFoodExtraIds,
   },
-  // --- Starters ---
   {
     id: 'croqueta-bites',
     name: 'Croqueta Bites',
@@ -114,7 +115,6 @@ export const mockProducts: Product[] = [
     available: true,
     extrasAvailable: defaultFoodExtraIds,
     saucesAvailable: ['salsa-bite', 'alioli', 'bbq', 'salsa-brava'],
-    additionalInfo: 'Por la compra de este platillo se donará $1 para ayudar a los animales sin hogar.',
   },
   {
     id: 'papas-bravas',
@@ -129,13 +129,13 @@ export const mockProducts: Product[] = [
     includesFries: false,
     available: true,
     extrasAvailable: defaultFoodExtraIds,
+    additionalInfo: 'Por la compra de este platillo se donará $1 para ayudar a los animales sin hogar.',
   },
-  // --- Milk Shakes ---
   {
     id: 'milkshake-fresa',
     name: 'Milk Shake — Fresa',
     categoryId: 'shakes-postres',
-    description: 'Milk shake sabor fresa.',
+    description: '',
     price: 180,
     images: [],
     featured: false,
@@ -147,7 +147,7 @@ export const mockProducts: Product[] = [
     id: 'milkshake-chocolate',
     name: 'Milk Shake — Chocolate',
     categoryId: 'shakes-postres',
-    description: 'Milk shake sabor chocolate.',
+    description: '',
     price: 180,
     images: [],
     featured: false,
@@ -159,7 +159,7 @@ export const mockProducts: Product[] = [
     id: 'milkshake-banano',
     name: 'Milk Shake — Banano',
     categoryId: 'shakes-postres',
-    description: 'Milk shake sabor banano.',
+    description: '',
     price: 180,
     images: [],
     featured: false,
@@ -171,7 +171,7 @@ export const mockProducts: Product[] = [
     id: 'milkshake-caramelo',
     name: 'Milk Shake — Caramelo',
     categoryId: 'shakes-postres',
-    description: 'Milk shake sabor caramelo.',
+    description: '',
     price: 180,
     images: [],
     featured: false,
@@ -179,12 +179,11 @@ export const mockProducts: Product[] = [
     includesFries: false,
     available: true,
   },
-  // --- Postres ---
   {
     id: 'brownie-bite',
     name: 'Brownie Bite',
     categoryId: 'shakes-postres',
-    description: 'Postre Brownie Bite.',
+    description: '',
     price: 60,
     images: [],
     featured: false,
@@ -196,7 +195,7 @@ export const mockProducts: Product[] = [
     id: 'cheesecake-bite',
     name: 'Cheese Cake Bite',
     categoryId: 'shakes-postres',
-    description: 'Postre Cheese Cake Bite.',
+    description: '',
     price: 60,
     images: [],
     featured: false,
@@ -204,12 +203,11 @@ export const mockProducts: Product[] = [
     includesFries: false,
     available: true,
   },
-  // --- Bebidas ---
   {
     id: 'coca-cola',
     name: 'Coca Cola',
     categoryId: 'bebidas',
-    description: 'Bebida: Coca Cola.',
+    description: '',
     price: 40,
     images: [],
     featured: false,
@@ -221,7 +219,7 @@ export const mockProducts: Product[] = [
     id: 'jugo',
     name: 'Jugo',
     categoryId: 'bebidas',
-    description: 'Bebida: Jugo.',
+    description: '',
     price: 40,
     images: [],
     featured: false,
@@ -233,7 +231,7 @@ export const mockProducts: Product[] = [
     id: 'agua',
     name: 'Agua',
     categoryId: 'bebidas',
-    description: 'Bebida: Agua.',
+    description: '',
     price: 30,
     images: [],
     featured: false,
@@ -245,7 +243,7 @@ export const mockProducts: Product[] = [
     id: 'cafe',
     name: 'Café',
     categoryId: 'bebidas',
-    description: 'Bebida: Café.',
+    description: '',
     price: 20,
     images: [],
     featured: false,

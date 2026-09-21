@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { View, Text, StyleSheet, Image, ScrollView, FlatList } from 'react-native';
+import { View, Text, StyleSheet, Image, ScrollView, FlatList, useWindowDimensions } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { colors, spacing, radius, typography, sizes } from '../../src/theme';
@@ -15,6 +15,8 @@ import type { SauceOption } from '../../src/types';
 export default function ProductDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const router = useRouter();
+  const { width } = useWindowDimensions();
+  const galleryHeight = width * 0.72;
   const { addItem } = useCart();
 
   const product = useMemo(() => mockProducts.find((p) => p.id === id), [id]);
@@ -73,21 +75,21 @@ export default function ProductDetailScreen() {
             renderItem={({ item }) => {
               const source = resolveProductImage(item);
               return source ? (
-                <Image source={source} style={styles.galleryImage} resizeMode="cover" />
+                <Image source={source} style={[styles.galleryImage, { width, height: galleryHeight }]} resizeMode="cover" />
               ) : (
-                <View style={[styles.galleryImage, styles.galleryPlaceholder]} />
+                <View style={[styles.galleryImage, styles.galleryPlaceholder, { width, height: galleryHeight }]} />
               );
             }}
           />
         ) : (
-          <View style={[styles.galleryImage, styles.galleryPlaceholder]} />
+          <View style={[styles.galleryImage, styles.galleryPlaceholder, { width, height: galleryHeight }]} />
         )}
 
         <View style={styles.body}>
           <Text style={styles.category}>{product.categoryId.replace('-', ' ')}</Text>
           <Text style={styles.name}>{product.name}</Text>
           <PriceBadge price={product.price} />
-          <Text style={styles.description}>{product.description}</Text>
+          {product.description ? <Text style={styles.description}>{product.description}</Text> : null}
           {product.includesFries ? <Text style={styles.includesFries}>Incluye papas fritas</Text> : null}
           {product.additionalInfo ? (
             <Text style={styles.additionalInfo}>{product.additionalInfo}</Text>
@@ -131,8 +133,6 @@ const styles = StyleSheet.create({
     paddingBottom: sizes.ctaHeight + spacing.xxxl,
   },
   galleryImage: {
-    width: 390,
-    height: 260,
     backgroundColor: colors.divider,
   },
   galleryPlaceholder: {
