@@ -2,34 +2,30 @@ import type { TextStyle } from 'react-native';
 
 /**
  * Tipografía oficial de Bite Club.
- * FUENTE: instrucciones del usuario, secciones "4. TIPOGRAFÍA OFICIAL" y
- * "5. ESCALA TIPOGRÁFICA INICIAL".
+ * FUENTE: BITE_CLUB_FRONTEND_MASTER_PROMPT.md, secciones 4-5 (confirma y
+ * reemplaza los nombres de familia propuestos en Fase Frontend 1 — la escala
+ * de tamaños/line-heights ya coincidía exactamente).
  *
- * ⚠️ Los archivos de fuente reales (Gliker, Gotham Book/Medium/Bold) TODAVÍA
- * NO existen en mobile/assets/fonts/ (ver README en esa carpeta y
- * src/hooks/useAppFonts.ts). Mientras no se carguen, estos nombres de familia
- * no resuelven a nada embebido y React Native cae automáticamente al font del
- * sistema — la app sigue compilando y renderizando sin romperse.
+ * ⚠️ Los 4 archivos de fuente reales TODAVÍA NO existen en
+ * mobile/assets/fonts/ (ver README en esa carpeta y src/hooks/useAppFonts.ts).
+ * Mientras no se carguen, estos nombres de familia no resuelven a nada
+ * embebido y React Native cae automáticamente al font del sistema — la app
+ * sigue compilando y renderizando sin romperse.
  */
 export const fontFamily = {
-  /** Logo, display, titulares gráficos, banners promocionales. */
-  display: 'Gliker',
-  /** H1, H2, títulos principales, CTA fuertes. */
-  bold: 'Gotham-Bold',
-  /** H3, labels, énfasis, botones secundarios. */
-  medium: 'Gotham-Medium',
-  /** Body, descripción, navegación, captions, información secundaria. */
-  book: 'Gotham-Book',
+  /** Logo, display, "Algo rico", promociones, elementos gráficos importantes. */
+  display: 'GlikerBlack',
+  /** H1, H2, títulos importantes. */
+  bold: 'GothamBold',
+  /** H3, botones, navegación, labels, precios destacados. */
+  medium: 'GothamMedium',
+  /** Body, ingredientes, descripciones, textos secundarios. */
+  book: 'GothamBook',
 } as const;
 
 interface TypeStyle extends Pick<TextStyle, 'fontFamily' | 'fontSize' | 'lineHeight'> {}
 
-/**
- * Line-height por nivel — DECISIÓN TÉCNICA PENDIENTE DE APROBACIÓN.
- * El usuario definió los `fontSize` exactos (sección 5); el line-height no fue
- * especificado. Se usó una proporción ~1.25–1.35, estándar para UI, pendiente
- * de confirmar o ajustar.
- */
+/** Escala tipográfica — fuente: master prompt, sección 4 (valores exactos). */
 export const typography = {
   display: { fontFamily: fontFamily.display, fontSize: 40, lineHeight: 48 } satisfies TypeStyle,
   h1: { fontFamily: fontFamily.bold, fontSize: 30, lineHeight: 38 } satisfies TypeStyle,

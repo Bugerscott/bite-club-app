@@ -1,28 +1,32 @@
-import { Text, StyleSheet } from 'react-native';
-import { Screen } from '../../src/components';
-import { colors, typography, spacing } from '../../src/theme';
+import React from 'react';
+import { View, StyleSheet } from 'react-native';
+import { Screen, EmptyState } from '../../src/components';
+import { spacing } from '../../src/theme';
+import { mockOffers } from '../../src/mocks';
 
-// Placeholder — Ofertas. Diseño pendiente.
+// Pantalla Ofertas — instrucciones, sección 26: no hay promociones oficiales
+// con descuento todavía. No se inventan porcentajes, 2x1, combos, fechas ni
+// precios especiales. Se muestra EmptyState mientras mockOffers esté vacío.
 export default function OffersScreen() {
   return (
     <Screen>
-      <Text style={styles.title}>Ofertas</Text>
-      <Text style={styles.subtitle}>Pantalla pendiente de diseño</Text>
+      <View style={styles.content}>
+        {mockOffers.length === 0 ? (
+          <EmptyState
+            icon="tag"
+            title="Todavía no hay ofertas"
+            description="Estamos preparando promociones. Vuelve pronto — algo rico está por venir."
+          />
+        ) : null}
+      </View>
     </Screen>
   );
 }
 
 const styles = StyleSheet.create({
-  title: {
-    fontFamily: typography.h1.fontFamily,
-    fontSize: typography.h1.fontSize,
-    color: colors.text,
-    marginTop: spacing.xl,
-  },
-  subtitle: {
-    fontFamily: typography.body.fontFamily,
-    fontSize: typography.body.fontSize,
-    color: colors.muted,
-    marginTop: spacing.xs,
+  content: {
+    flex: 1,
+    justifyContent: 'center',
+    paddingBottom: spacing.xxxl,
   },
 });

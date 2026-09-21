@@ -4,7 +4,8 @@ import type { RewardItem } from '../types';
  * No hay catálogo de recompensas aprobado todavía (nombres, costos en puntos
  * reales). Estos 3 items son placeholders de desarrollo, pensados solo para
  * poder probar los 3 estados de RewardCard (available/locked/redeemed) — no
- * son recompensas reales de Bite Club.
+ * son recompensas reales de Bite Club. No se inventan reglas comerciales
+ * definitivas (instrucciones, sección 15).
  */
 export const mockRewards: RewardItem[] = [
   {

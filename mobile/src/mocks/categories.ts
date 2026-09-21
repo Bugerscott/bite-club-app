@@ -1,13 +1,10 @@
-import type { ProductCategory } from '../types';
+import type { MenuCategory } from '../types';
 
-/**
- * Categorías estructurales para el menú. "drinks" y "combos" todavía no
- * tienen productos mock asociados (ver products.ts) — quedan definidas para
- * que CategoryChip y el futuro filtro de menú tengan las 4 disponibles.
- */
-export const mockCategories: ProductCategory[] = [
-  { id: 'bites', label: 'Bites' },
-  { id: 'sides', label: 'Acompañantes' },
-  { id: 'drinks', label: 'Bebidas' },
-  { id: 'combos', label: 'Combos' },
+/** Categorías oficiales del menú — fuente: instrucciones, sección 10 y 16. */
+export const mockCategories: MenuCategory[] = [
+  { id: 'smash-burgers', label: 'Smash Burgers' },
+  { id: 'especialidades', label: 'Especialidades' },
+  { id: 'starters', label: 'Starters' },
+  { id: 'shakes-postres', label: 'Milk Shakes & Postres' },
+  { id: 'bebidas', label: 'Bebidas' },
 ];

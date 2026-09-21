@@ -1,9 +1,22 @@
-# brand/ — Assets de marca oficiales (logo, referencias gráficas)
+# brand/ — Assets de marca oficiales
 
-Vacía por ahora. Aquí va el logo oficial de Bite Club y cualquier asset de marca que
-proporciones (versiones de logo, referencias gráficas, referencias de empaque), una vez
-aprobados.
+Archivos esperados (nombres exactos, fuente: master prompt sección 5):
 
-No confundir con `mobile/assets/images/`, que contiene los placeholders técnicos de
-`app.json` (icon, adaptive-icon, splash, favicon) — esos se quedan donde están hasta que
-se reemplacen oficialmente (ver README en esa carpeta).
+| Archivo | Uso |
+|---|---|
+| `Bite-Club-_isotipo.png` | Isotipo (marca gráfica sin texto) |
+| `Bite-Club-_isotipo-white.png` | Isotipo, versión blanca (fondos oscuros/rojos) |
+| `Bite-Club-_logo-primary.png` | Logo completo, sobre fondos claros |
+| `Bite-Club-_logo-white.png` | Logo completo, versión blanca, sobre fondos rojos/oscuros |
+
+⚠️ **Ninguno de estos 4 archivos existe todavía en esta carpeta.** El Home
+(`app/(tabs)/index.tsx`) usa por ahora un texto "Bite Club" con
+`typography.display` (GlikerBlack) como placeholder del logo, en vez de una
+imagen — para no reconstruir ni aproximar el logo real sin tenerlo.
+
+## Cómo activar
+
+1. Copiar los 4 archivos aquí con los nombres exactos de la tabla.
+2. Reemplazar el texto placeholder del header de Inicio por
+   `<Image source={require('../../assets/brand/Bite-Club-_logo-primary.png')} />`.
+3. No reconstruir ni modificar el logo — usar los archivos tal cual se entreguen.

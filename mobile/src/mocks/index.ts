@@ -1,6 +1,10 @@
 export { mockCategories } from './categories';
 export { mockProducts } from './products';
+export { mockExtras, defaultFoodExtraIds } from './extras';
 export { mockOffers } from './offers';
 export { mockRewards } from './rewards';
 export { mockOrders } from './orders';
 export { mockMember } from './user';
+export { mockAddresses } from './addresses';
+export { mockNotifications } from './notifications';
+export { mockPointsHistory } from './pointsHistory';

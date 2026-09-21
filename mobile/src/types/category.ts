@@ -1,6 +1,6 @@
-import type { ProductCategoryId } from './product';
+import type { MenuCategoryId } from './product';
 
-export interface ProductCategory {
-  id: ProductCategoryId;
+export interface MenuCategory {
+  id: MenuCategoryId;
   label: string;
 }

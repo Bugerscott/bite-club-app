@@ -15,6 +15,11 @@
 | 2026-09-18 | `app.json`: splash configurado vía plugin `expo-splash-screen` | La clave raíz `"splash"` es la configuración heredada de SDKs anteriores; SDK 57 usa el plugin. Mismos assets placeholder, sin romper rutas. |
 | 2026-09-20 | Iconografía: `@expo/vector-icons` (familia Feather) | Estándar del ecosistema Expo, ya viene incluido en el paquete `expo`; evita depender de SVGs custom para iconos genéricos de UI (casa, estrella, bolsa, etc.). Nueva dependencia explícita, documentada en package.json. |
 | 2026-09-20 | Carga de fuentes: `expo-font` (vía hook `useAppFonts`) | Necesario para activar Gliker/Gotham cuando existan los archivos reales; el hook está preparado pero NO activa `useFonts()` todavía (ver `src/hooks/useAppFonts.ts`) para no romper Metro con `require()` de archivos inexistentes. |
+| 2026-09-21 | Estado global: React Context + `useReducer` (CartContext, AppStateContext) | Suficiente para carrito/delivery/dirección/pedido actual en esta fase (master prompt, sección 19); explícitamente se evita instalar Redux/Zustand sin necesidad. |
+| 2026-09-21 | Nombres de familia tipográfica renombrados: `GlikerBlack`, `GothamBold`, `GothamMedium`, `GothamBook` | Alineados exactamente con el master prompt (sección 4), reemplazando los nombres provisionales de Fase 1 (`Gliker`, `Gotham-Bold`, etc.). La escala de tamaños/line-heights no cambió — ya coincidía. |
+| 2026-09-21 | Splash animado: `expo-video` (nueva dependencia) + hook stub `useSplashVideoReady` | El archivo `splash-animation.mp4` (master prompt, sección 7) todavía no existe; se sigue el mismo patrón que `useAppFonts` — coordinación con `SplashScreen.preventAutoHideAsync()` ya implementada en `app/_layout.tsx`, lista para activar sin romper Metro cuando llegue el archivo real. |
+| 2026-09-21 | Menú, extras y bebidas/postres modelados como `Product` único (sin tipos `Drink`/`Dessert` separados) | El master prompt sugiere `drinks.ts`/`desserts.ts` como opcional ("Puede agregar"); se mantienen en `mocks/products.ts` bajo las categorías `shakes-postres`/`bebidas` porque renderizan igual que cualquier otro producto (misma card, mismo detalle) — evita duplicar tipos y lógica de UI sin necesidad. |
+| 2026-09-21 | `imageKey` de los 5 productos con fotografía real anunciada ya cargados en mocks, resolviendo a `null` | `src/lib/productImages.ts` centraliza el mapa `imageKey -> require()`, vacío hasta que existan los archivos en `mobile/assets/products/` — evita `require()` de archivos inexistentes en cualquier componente. |
 
 ## Versiones de dependencias de Expo SDK 57 — origen de cada número
 
@@ -44,6 +49,7 @@ Este scaffold se generó en un entorno **sin acceso al registro de npm** (confir
 | `eslint-config-expo` | Ligado al SDK; además SDK 57 puede preferir `npx expo lint` para scaffolding — confirmar en tu PC |
 | `@expo/vector-icons` | Se distribuye junto con `expo`; versión exacta ligada al SDK, no verificable sin registro |
 | `expo-font` | Ligado al SDK; no verificable sin registro |
+| `expo-video` | Ligado al SDK; no verificable sin registro. Nueva dependencia para el splash animado (sección 7 del master prompt) — todavía sin uso activo hasta que exista `splash-animation.mp4`. |
 
 **Cómo resolver el grupo B en tu PC** (después de `npm install`, que instalará la última
 versión publicada de cada uno por el `"*"`):
@@ -59,7 +65,7 @@ Expo SDK 57 espera. Si algún paquete individual da problema, se puede forzar un
 npx expo install expo-router
 npx expo install expo-status-bar expo-constants expo-linking expo-splash-screen expo-secure-store
 npx expo install react-native-safe-area-context react-native-screens
-npx expo install @expo/vector-icons expo-font
+npx expo install @expo/vector-icons expo-font expo-video
 ```
 
 Después, verificar todo con:
@@ -75,3 +81,17 @@ npx expo-doctor
 - Corrección de RLS de `points_balance` y política de INSERT de `order_items` — ver
   `docs/security-review.md`. Se decide junto con el diseño del motor de puntos y del
   flujo de pedidos, no en esta fase.
+
+## Assets bloqueados por archivos faltantes (Fase Frontend 2)
+
+No se inventó ningún archivo binario. Documentado en detalle en
+`docs/FRONTEND_STATUS.md`, resumen:
+
+- 4 fuentes reales (`mobile/assets/fonts/`) — ver README de esa carpeta.
+- 4 assets de marca (`mobile/assets/brand/`) — ver README de esa carpeta.
+- 6 assets nativos de app/splash, incluido `splash-animation.mp4` (`mobile/assets/app/`) — ver README de esa carpeta.
+- 5 fotografías reales de producto (`mobile/assets/products/`) — ver README de esa carpeta.
+
+`app.json` sigue apuntando a los placeholders de Fase 1 (`mobile/assets/images/`)
+hasta que lleguen los assets nativos reales — no se referenciaron rutas a
+archivos inexistentes para no romper el build de Expo.

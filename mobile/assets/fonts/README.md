@@ -1,35 +1,23 @@
-# ⚠️ Fuentes pendientes — archivos que necesito que me proporciones
+# Fuentes — Bite Club
 
-Esta carpeta está preparada para recibir las fuentes oficiales de Bite Club, pero
-**todavía no contiene ningún archivo real**. No se generaron ni sustituyeron fuentes
-falsas — eso está explícitamente prohibido.
+Archivos esperados (nombres exactos, fuente: master prompt sección 4):
 
-## Archivos esperados
+| Archivo | Familia lógica |
+|---|---|
+| `Gotham-Bold.ttf` | `GothamBold` |
+| `Gotham-Book.otf` | `GothamBook` |
+| `Gotham-Medium.otf` | `GothamMedium` |
+| `Gliker-Black.ttf` | `GlikerBlack` |
 
-| Familia | Nombre de archivo esperado (ejemplo) | Uso |
-|---|---|---|
-| Gliker | `Gliker.otf` (o `.ttf`) | Logo, display, titulares gráficos, banners |
-| Gotham Book | `Gotham-Book.otf` (o `.ttf`) | Body, descripción, navegación, captions |
-| Gotham Medium | `Gotham-Medium.otf` (o `.ttf`) | H3, labels, énfasis, botones secundarios |
-| Gotham Bold | `Gotham-Bold.otf` (o `.ttf`) | H1, H2, títulos principales, CTA fuertes |
+⚠️ **Ninguno de estos 4 archivos existe todavía en esta carpeta.** No usar
+Gotham Narrow ni ninguna fuente sustituta — mientras no lleguen los archivos
+reales, la app usa el font del sistema automáticamente (ver
+`src/hooks/useAppFonts.ts`, que no rompe el build).
 
-**No conozco la extensión real de tus archivos** (`.otf` vs `.ttf`) ni si existen variantes
-adicionales (Italic, Light, etc.). Los nombres de arriba son el punto de partida que ya
-está referenciado en el código (ver `src/hooks/useAppFonts.ts`, comentado).
+## Cómo activar
 
-## Qué hacer cuando tengas los archivos
-
-1. Copia los 4 archivos a esta carpeta (`mobile/assets/fonts/`).
-2. Si el nombre de archivo no coincide exactamente con la tabla de arriba, avísame o
-   ajústalo tú mismo en `src/hooks/useAppFonts.ts`.
-3. Descomenta el bloque `useFonts(...)` en `src/hooks/useAppFonts.ts` (instrucciones
-   dentro del mismo archivo).
-4. Corre `npx expo install expo-font` si aún no está resuelta esa dependencia (ya está
-   declarada en `package.json`, ver `docs/decisiones-tecnicas.md`).
-5. Verifica con `npm run typecheck` y `npx expo start` que todo cargue bien.
-
-## Mientras tanto
-
-El resto de la app **no se rompe** por la ausencia de estos archivos: los estilos de
-`src/theme/typography.ts` ya usan los nombres de familia correctos, y React Native cae
-automáticamente al font del sistema hasta que las fuentes reales estén cargadas.
+1. Copiar los 4 archivos aquí con los nombres exactos de la tabla.
+2. Descomentar el bloque `useFonts(...)` en `mobile/src/hooks/useAppFonts.ts`.
+3. Los tokens de `mobile/src/theme/typography.ts` ya usan estos nombres de
+   familia (`GlikerBlack`, `GothamBold`, `GothamMedium`, `GothamBook`) — no
+   requieren ningún cambio adicional.

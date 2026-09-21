@@ -19,3 +19,4 @@ export { MemberCard, type MemberCardProps } from './MemberCard';
 export { EmptyState, type EmptyStateProps } from './EmptyState';
 export { LoadingState, type LoadingStateProps } from './LoadingState';
 export { ErrorState, type ErrorStateProps } from './ErrorState';
+export { Badge, type BadgeProps } from './Badge';

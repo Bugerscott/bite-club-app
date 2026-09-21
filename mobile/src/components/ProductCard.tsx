@@ -47,7 +47,7 @@ export function ProductCard({ product, onPress, imageSource }: ProductCardProps)
         {product.name}
       </Text>
       <Text style={styles.description} numberOfLines={2}>
-        {product.shortDescription}
+        {product.description}
       </Text>
       <PriceBadge price={product.price} />
     </Pressable>

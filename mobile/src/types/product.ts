@@ -1,29 +1,51 @@
 /**
- * Tipos de producto para la fase de frontend con datos mock.
+ * Tipos de producto/menú — Fase Frontend 2 (menú real, ver
+ * BITE_CLUB_FRONTEND_MASTER_PROMPT.md secciones 10-11).
  *
- * Nota: Supabase todavía no tiene una tabla `products` (solo `offers` y
- * `rewards`, ver supabase/migrations/). Este tipo es independiente del
- * esquema de base de datos (src/types/database.ts) a propósito — se
- * reconciliarán cuando se diseñe el backend real de catálogo/menú.
+ * Sigue independiente del esquema de Supabase (src/types/database.ts): no
+ * existe todavía una tabla `products` en el backend. Se reconciliarán cuando
+ * se diseñe el catálogo/menú real.
  */
-export type ProductCategoryId = 'bites' | 'sides' | 'drinks' | 'combos';
+export type MenuCategoryId =
+  | 'smash-burgers'
+  | 'especialidades'
+  | 'starters'
+  | 'shakes-postres'
+  | 'bebidas';
+
+export type SauceOption = 'salsa-bite' | 'alioli' | 'bbq' | 'salsa-brava';
 
 export type ProductBadge = 'nuevo' | 'popular';
 
 export interface Product {
   id: string;
   name: string;
-  shortDescription: string;
-  categoryId: ProductCategoryId;
-  /** null = todavía no existe un precio aprobado para este producto. */
-  price: number | null;
+  categoryId: MenuCategoryId;
+  /** Descripción oficial del menú (fuente: instrucciones del usuario, sección 10). */
+  description: string;
+  price: number;
   /**
-   * Referencia local a una imagen mock (ver src/mocks/products.ts). No es una
-   * URL — mientras no haya Storage, cada Product Card resuelve esta key a un
-   * `require()` local a través de un mapa de imágenes (o a un estado vacío si
-   * la key es null).
+   * Referencias locales a imágenes mock (ver src/mocks/products.ts). No son
+   * URLs — se resuelven a través de un mapa de imágenes local
+   * (src/lib/productImages.ts). Array vacío = sin fotografía real todavía
+   * (placeholder visual).
    */
-  imageKey: string | null;
+  images: string[];
+  /** Aparece en secciones destacadas de Inicio. */
+  featured: boolean;
+  /** Producto estrella (Mordida Nica) — mayor protagonismo visual. */
+  starProduct: boolean;
+  includesFries: boolean;
   available: boolean;
-  badge: ProductBadge | null;
+  /** IDs de extras disponibles para este producto (ver src/mocks/extras.ts). */
+  extrasAvailable?: string[];
+  /** Opciones de salsa (solo "Algo Rico" por ahora). */
+  saucesAvailable?: SauceOption[];
+  /**
+   * Texto informativo oficial adicional (ej. nota de donación de "Algo Rico").
+   * NO es un slogan — es información puntual del producto, dada textualmente
+   * por el usuario. No convertir en claim general de marca.
+   */
+  additionalInfo?: string;
+  badge?: ProductBadge | null;
 }

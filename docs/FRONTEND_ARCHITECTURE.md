@@ -83,35 +83,53 @@ consumirán los mocks directamente vía import, como si fueran el resultado de u
 llamada a datos — el reemplazo por datos reales (Supabase queries / RPC) es un
 cambio de fuente de datos, no de estructura de componentes.
 
-## 6. Rutas futuras (documentadas, NO implementadas en esta fase)
+## 6. Rutas (implementadas en Fase Frontend 2)
 
-Cuando se autoricen las siguientes fases, se espera esta expansión de
-`mobile/app/` (fuera de `(tabs)`):
+Todas construidas y navegables sobre `mobile/app/` (fuera de `(tabs)`), 100%
+mock/local — sin backend real detrás de ninguna:
 
 | Ruta | Propósito |
 |---|---|
-| `/product/[id]` | Detalle de producto |
-| `/cart` | Carrito |
-| `/checkout` | Checkout |
-| `/delivery` | Selección de método/dirección de entrega |
-| `/addresses` | Gestión de direcciones guardadas |
-| `/order-confirmation` | Confirmación post-pedido |
-| `/order-tracking` | Seguimiento de pedido en curso |
-| `/order-history` | Historial de pedidos |
-| `/reward/[id]` | Detalle/canje de recompensa |
+| `/product/[id]` | Detalle de producto — galería, opciones, extras, agregar al carrito |
+| `/cart` | Carrito — editar cantidades, eliminar, ver total |
+| `/delivery` | Elegir Delivery o Retiro + dirección |
+| `/addresses` | CRUD local de direcciones |
+| `/checkout` | Resumen + confirmar pedido (crea `MockOrder` local) |
+| `/order-confirmation` | Confirmación con resumen y número de pedido |
+| `/order-tracking` | Timeline de 5 estados del pedido actual |
+| `/order-history` | Historial de pedidos mock, con "Repetir" (reconstruye carrito) |
+| `/reward/[id]` | Detalle de recompensa (sin canje real) |
 | `/points-history` | Historial de movimientos de puntos |
-| `/profile` | Perfil de usuario |
-| `/notifications` | Notificaciones |
-| `/support` | Soporte |
+| `/profile` | Datos de perfil (mock, edición local) |
+| `/notifications` | Lista de notificaciones (leída/no leída, local) |
+| `/support` | Opciones de soporte (sin canales inventados) |
 
-Ninguno de estos archivos existe todavía — es únicamente el plan de navegación
-para que el diseño de componentes de esta fase (props, tipos) sea compatible con
-lo que vendrá, sin necesidad de rehacerlo.
+Todas registradas en `mobile/app/_layout.tsx` (Stack), con `/cart` presentado
+como modal. `(tabs)` sigue siendo el grupo raíz de la bottom navigation.
 
-## 7. Qué NO se tocó en esta fase
+## 7. Estado global
+
+`mobile/src/state/`:
+
+- `CartContext` — items del carrito (`useReducer`), con líneas separadas por
+  configuración (producto + salsa + extras). Expone `addItem`,
+  `incrementItem`, `decrementItem`, `removeItem`, `clearCart`, `subtotal`,
+  `itemCount`.
+- `AppStateContext` — método de entrega, direcciones (CRUD local), dirección
+  seleccionada, pedido mock actual (`currentOrder`, usado por
+  confirmación/tracking).
+- `RootProviders` — combina ambos, montado en `app/_layout.tsx`.
+
+Sin Redux/Zustand — Context + reducer es suficiente para este alcance
+(instrucciones, sección 19).
+
+## 8. Qué NO se tocó / NO se implementó en esta fase
 
 - `supabase/` (migraciones, RLS, Auth, Storage, Edge Functions) — sin cambios.
-- Ninguna pantalla de `(tabs)` tiene contenido real — siguen siendo placeholders,
-  ahora usando `Screen` y tokens de tipografía/color en vez de estilos sueltos.
-- No hay autenticación, carrito, checkout, pedidos, puntos, pagos, mapas,
-  delivery, push notifications ni panel admin implementados.
+- Sin autenticación real, pagos reales, mapas/geocoding reales ni push
+  notifications reales.
+- Favoritos: no implementados (el master prompt los marca como opcionales,
+  "si existen").
+- Assets binarios reales (fuentes, logo, íconos de app, splash animado,
+  fotografía de producto) — ver `docs/FRONTEND_STATUS.md` para el detalle
+  completo de qué falta y cómo activarlo.

@@ -23,6 +23,7 @@
     "expo-splash-screen": "*",
     "expo-secure-store": "*",
     "expo-font": "*",
+    "expo-video": "*",
     "@expo/vector-icons": "*",
     "react": "19.2.3",
     "react-dom": "19.2.3",

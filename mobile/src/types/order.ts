@@ -1,16 +1,33 @@
-export type MockOrderStatus = 'pending' | 'confirmed' | 'delivering' | 'completed' | 'cancelled';
+export type DeliveryMethod = 'delivery' | 'pickup';
 
 /**
- * Resumen de pedido para la pantalla de Inicio ("últimos pedidos") y para el
- * futuro historial de pedidos. Separado de `Order`/`OrderItem` en
- * src/types/database.ts por la misma razón que el resto de tipos mock.
+ * Estados de seguimiento de pedido (instrucciones, sección 24). Sin GPS ni
+ * mapas — solo timeline/progreso local.
  */
-export interface MockOrderSummary {
+export type OrderTrackingStatus = 'received' | 'preparing' | 'ready' | 'on_the_way' | 'delivered';
+
+export interface MockOrderItem {
+  cartItemId: string;
+  productId: string;
+  name: string;
+  quantity: number;
+  unitPrice: number;
+  lineTotal: number;
+}
+
+/**
+ * Pedido mock completo — usado en Inicio ("últimos pedidos"), historial,
+ * confirmación y tracking. Totalmente local/frontend, no ligado a la tabla
+ * `orders` de Supabase (ver src/types/database.ts) en esta fase.
+ */
+export interface MockOrder {
   id: string;
-  /** Texto ya compuesto, ej. "2x B's Bite, 1x Papas Bravas". No es una lista estructurada todavía. */
-  itemsSummary: string;
-  /** null = sin precio aprobado todavía. */
-  total: number | null;
-  status: MockOrderStatus;
+  orderNumber: string;
+  items: MockOrderItem[];
+  subtotal: number;
+  total: number;
+  deliveryMethod: DeliveryMethod;
+  addressLabel: string | null;
+  status: OrderTrackingStatus;
   createdAt: string;
 }

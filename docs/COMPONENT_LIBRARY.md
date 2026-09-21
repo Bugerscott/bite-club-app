@@ -111,6 +111,11 @@ Card de identidad del miembro (pantalla Club): avatar, nombre, fecha de
 membresía formateada.
 - `member: MockMember`
 
+### `Badge`
+Badge numérico pequeño, superpuesto sobre otro elemento (ej. contador de
+carrito sobre el ícono de Pedir en la bottom nav).
+- `count: number` — no renderiza nada si `count <= 0`.
+
 ## Estados
 
 ### `EmptyState`
@@ -131,6 +136,25 @@ Spinner centrado + label.
 - `description?: string`
 - `retryLabel?: string`
 - `onRetry?: () => void`
+
+## Componentes de feature (`mobile/src/features/`)
+
+Componentes compuestos, específicos de un flujo, que combinan varios
+componentes de la librería base + lógica local. No están en el barrel de
+`components/` a propósito — viven junto a la pantalla que los usa
+(instrucciones, sección 37: extraer UI compleja a `features/` sin
+sobrefragmentar).
+
+- `features/order/ProductOptionsPicker.tsx` — selector de salsa + checklist de
+  extras, usado en `/product/[id]`.
+- `features/order/StatusTimeline.tsx` — timeline de 5 estados de pedido, usado
+  en `/order-tracking`.
+- `features/cart/CartLineItem.tsx` — fila de carrito (imagen, opciones,
+  stepper, eliminar), usada en `/cart`.
+- `features/profile/AddressCard.tsx` — card de dirección seleccionable/
+  editable, usada en `/addresses` y `/delivery`.
+- `features/profile/NotificationRow.tsx` — fila de notificación leída/no
+  leída, usada en `/notifications`.
 
 ## Convenciones comunes
 

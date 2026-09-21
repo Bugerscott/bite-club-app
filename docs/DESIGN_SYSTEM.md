@@ -38,31 +38,33 @@ son una propuesta razonable siguiendo el mismo patrón, no confirmados uno por u
 
 ## 2. Tipografía
 
-Familias oficiales:
+Familias oficiales (nombres exactos confirmados por el master prompt de Fase
+Frontend 2 — reemplazan los nombres provisionales de Fase 1):
 
 | Token | Familia | Uso |
 |---|---|---|
-| `fontFamily.display` | Gliker | Logo, display, banners promocionales |
-| `fontFamily.bold` | Gotham-Bold | H1, H2, CTAs fuertes |
-| `fontFamily.medium` | Gotham-Medium | H3, labels, énfasis |
-| `fontFamily.book` | Gotham-Book | Body, descripciones, navegación, captions |
+| `fontFamily.display` | GlikerBlack | Logo, display, "Algo rico", promociones |
+| `fontFamily.bold` | GothamBold | H1, H2, títulos importantes |
+| `fontFamily.medium` | GothamMedium | H3, botones, navegación, labels, precios destacados |
+| `fontFamily.book` | GothamBook | Body, ingredientes, descripciones, textos secundarios |
 
-⚠️ Los 4 archivos de fuente reales **no existen todavía** en `mobile/assets/fonts/`.
+⚠️ Los 4 archivos de fuente reales **no existen todavía** en `mobile/assets/fonts/`
+(`Gotham-Bold.ttf`, `Gotham-Book.otf`, `Gotham-Medium.otf`, `Gliker-Black.ttf`).
 Mientras tanto, React Native cae al font del sistema automáticamente (no rompe nada).
 Ver `mobile/src/hooks/useAppFonts.ts` para el mecanismo de activación futura.
+No usar Gotham Narrow ni sustitutos.
 
-Escala tipográfica (`fontSize` exacto dado por el usuario; `lineHeight` es una
-propuesta ~1.25–1.35, **pendiente de aprobación**):
+Escala tipográfica (valores exactos, confirmados por el master prompt):
 
 | Token | Familia | Size | Line-height |
 |---|---|---|---|
-| `display` | Gliker | 40 | 48 |
-| `h1` | Gotham-Bold | 30 | 38 |
-| `h2` | Gotham-Bold | 22 | 28 |
-| `h3` | Gotham-Medium | 18 | 24 |
-| `body` | Gotham-Book | 16 | 22 |
-| `caption` | Gotham-Book | 13 | 18 |
-| `micro` | Gotham-Book | 11 | 14 |
+| `display` | GlikerBlack | 40 | 48 |
+| `h1` | GothamBold | 30 | 38 |
+| `h2` | GothamBold | 22 | 28 |
+| `h3` | GothamMedium | 18 | 24 |
+| `body` | GothamBook | 16 | 22 |
+| `caption` | GothamBook | 13 | 18 |
+| `micro` | GothamBook | 11 | 14 |
 
 ## 3. Spacing
 
