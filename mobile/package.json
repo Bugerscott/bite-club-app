@@ -15,28 +15,28 @@
     "doctor": "expo-doctor"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.45.0",
     "expo": "~57.0.0",
-    "expo-router": "*",
-    "expo-status-bar": "*",
     "expo-constants": "*",
     "expo-linking": "*",
-    "expo-splash-screen": "*",
+    "expo-router": "*",
     "expo-secure-store": "*",
+    "expo-splash-screen": "*",
+    "expo-status-bar": "*",
     "react": "19.2.3",
     "react-dom": "19.2.3",
-    "react-native": "0.86.0",
-    "react-native-safe-area-context": "*",
-    "react-native-screens": "*",
-    "react-native-url-polyfill": "^2.0.0",
-    "@supabase/supabase-js": "^2.45.0"
+    "react-native": "0.86.3",
+    "react-native-safe-area-context": "~5.7.0",
+    "react-native-screens": "~4.26.0",
+    "react-native-url-polyfill": "^2.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.25.0",
+    "@types/react": "~19.2.4",
     "babel-preset-expo": "*",
-    "@types/react": "*",
-    "typescript": "~5.9.0",
     "eslint": "^9.0.0",
-    "eslint-config-expo": "*"
+    "eslint-config-expo": "*",
+    "typescript": "~6.0.3"
   },
   "private": true
 }
