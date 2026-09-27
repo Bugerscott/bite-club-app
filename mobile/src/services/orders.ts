@@ -6,7 +6,7 @@ export type DeliveryMethod = 'delivery' | 'pickup';
 export async function createOrder(items: CartItem[], deliveryMethod: DeliveryMethod) {
   if (!items.length) throw new Error('El pedido no puede estar vacio.');
   for (const item of items) {
-    if (!item.name.trim() || !Number.isInteger(item.quantity) || item.quantity < 1 || item.price < 0) {
+    if (!item.name.trim() || !Number.isInteger(item.quantity) || item.quantity < 1 || !Number.isFinite(item.price) || item.price < 0) {
       throw new Error('Hay un producto invalido en el pedido.');
     }
   }
@@ -15,23 +15,18 @@ export async function createOrder(items: CartItem[], deliveryMethod: DeliveryMet
   if (authError) throw authError;
   if (!auth.user) throw new Error('Debes iniciar sesion para realizar un pedido.');
 
-  const subtotal = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
-  const { data: order, error: orderError } = await supabase
-    .from('orders')
-    .insert({ user_id: auth.user.id, delivery_method: deliveryMethod, subtotal, total: subtotal })
-    .select('id,order_number,status,total,created_at')
-    .single();
-  if (orderError) throw orderError;
+  const { data, error } = await supabase.rpc('create_order_with_items', {
+    p_delivery_method: deliveryMethod,
+    p_items: items.map((item) => ({
+      name: item.name.trim(),
+      quantity: item.quantity,
+      price: Number(item.price.toFixed(2)),
+    })),
+  });
+  if (error) throw error;
 
-  const { error: itemsError } = await supabase.from('order_items').insert(
-    items.map((item) => ({ order_id: order.id, item_name: item.name.trim(), quantity: item.quantity, price: item.price })),
-  );
-  if (itemsError) {
-    // No ocultamos un pedido parcialmente creado: el caller recibe el error y el
-    // registro queda visible para conciliacion administrativa.
-    throw itemsError;
-  }
-  return order;
+  // PostgreSQL returns the composite order row from the RPC.
+  return data;
 }
 
 export async function getMyOrders() {
