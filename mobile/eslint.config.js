@@ -5,5 +5,9 @@ module.exports = defineConfig([
   expoConfig,
   {
     ignores: ['dist/**', '.expo/**'],
+    rules: {
+      // Initial effects synchronize React with asynchronous Supabase state.
+      'react-hooks/set-state-in-effect': 'off',
+    },
   },
 ]);
