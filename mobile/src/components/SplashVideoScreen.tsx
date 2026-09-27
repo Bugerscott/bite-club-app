@@ -52,7 +52,6 @@ export function SplashVideoScreen({ onFinish }: SplashVideoScreenProps) {
         style={StyleSheet.absoluteFill}
         contentFit="cover"
         nativeControls={false}
-        allowsFullscreen={false}
         allowsPictureInPicture={false}
         onFirstFrameRender={handleFirstFrame}
       />

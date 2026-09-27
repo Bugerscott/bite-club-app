@@ -12,9 +12,9 @@ export const shadows: Record<'none' | 'soft', ViewStyle> = {
   soft: Platform.select<ViewStyle>({
     ios: {
       shadowColor: colors.text,
-      shadowOpacity: 0.08,
-      shadowRadius: 8,
-      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.07,
+      shadowRadius: 12,
+      shadowOffset: { width: 0, height: 3 },
     },
     android: {
       elevation: 2,

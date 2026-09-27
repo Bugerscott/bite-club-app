@@ -3,6 +3,7 @@ import { View, Text, TextInput, StyleSheet } from 'react-native';
 import { Screen, Button } from '../src/components';
 import { colors, spacing, radius, typography } from '../src/theme';
 import { mockMember } from '../src/mocks';
+import { supabase } from '../src/lib/supabase';
 
 // Ruta /profile — instrucciones, sección 28: nombre, correo, teléfono,
 // edición visual/local. Todos los valores son mock/dev, no datos reales.
@@ -11,6 +12,16 @@ export default function ProfileScreen() {
   const [email, setEmail] = useState(mockMember.email);
   const [phone, setPhone] = useState(mockMember.phone);
   const [editing, setEditing] = useState(false);
+  const [signingOut, setSigningOut] = useState(false);
+
+  // Cierra la sesión real de Supabase Auth — instrucciones, sección 2
+  // ("permitir cerrar sesión desde Perfil/Más"). El listener en
+  // `useSession()` (app/_layout.tsx) redirige a Auth automáticamente.
+  async function handleSignOut() {
+    setSigningOut(true);
+    await supabase.auth.signOut();
+    setSigningOut(false);
+  }
 
   return (
     <Screen scroll>
@@ -53,6 +64,14 @@ export default function ProfileScreen() {
         variant={editing ? 'primary' : 'secondary'}
         style={styles.button}
       />
+
+      <Button
+        label={signingOut ? 'Cerrando sesión…' : 'Cerrar sesión'}
+        onPress={handleSignOut}
+        variant="ghost"
+        loading={signingOut}
+        style={styles.signOutButton}
+      />
     </Screen>
   );
 }
@@ -86,6 +105,9 @@ const styles = StyleSheet.create({
   },
   button: {
     marginTop: spacing.xl,
+  },
+  signOutButton: {
+    marginTop: spacing.sm,
     marginBottom: spacing.xl,
   },
 });

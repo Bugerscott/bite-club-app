@@ -1,70 +1,25 @@
-import { View } from 'react-native';
 import { Tabs } from 'expo-router';
-import { Feather } from '@expo/vector-icons';
-import { colors, spacing, typography } from '../../src/theme';
-import { Badge } from '../../src/components';
-import { useCart } from '../../src/state';
+import { LiquidTabBar } from '../../src/components/navigation/LiquidTabBar';
 
-/** Navegación oficial: Inicio | Club | Pedir | Ofertas | Más. */
+/**
+ * Navegación oficial: Inicio | Club | Pedir | Ofertas | Más.
+ * La barra líquida (`LiquidTabBar`, instrucciones sección 5) reemplaza el
+ * render por defecto de React Navigation y es dueña de iconos/labels/estado
+ * activo — por eso `tabBarIcon` ya no se define por pantalla aquí.
+ */
 export default function TabsLayout() {
-  const { itemCount } = useCart();
-
   return (
     <Tabs
+      tabBar={(props) => <LiquidTabBar {...props} />}
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: colors.primary,
-        tabBarInactiveTintColor: colors.secondary,
-        tabBarStyle: {
-          paddingTop: spacing.xs,
-        },
-        tabBarLabelStyle: {
-          fontFamily: typography.navLabel.fontFamily,
-          fontSize: typography.navLabel.fontSize,
-          lineHeight: typography.navLabel.lineHeight,
-        },
       }}
     >
-      <Tabs.Screen
-        name="index"
-        options={{
-          title: 'Inicio',
-          tabBarIcon: ({ color, size }) => <Feather name="home" size={size} color={color} />,
-        }}
-      />
-      <Tabs.Screen
-        name="club"
-        options={{
-          title: 'Club',
-          tabBarIcon: ({ color, size }) => <Feather name="star" size={size} color={color} />,
-        }}
-      />
-      <Tabs.Screen
-        name="order"
-        options={{
-          title: 'Pedir',
-          tabBarIcon: ({ color, size }) => (
-            <View>
-              <Feather name="shopping-bag" size={size} color={color} />
-              <Badge count={itemCount} />
-            </View>
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="offers"
-        options={{
-          title: 'Ofertas',
-          tabBarIcon: ({ color, size }) => <Feather name="tag" size={size} color={color} />,
-        }}
-      />
-      <Tabs.Screen
-        name="more"
-        options={{
-          title: 'Más',
-          tabBarIcon: ({ color, size }) => <Feather name="menu" size={size} color={color} />,
-        }}
-      />
+      <Tabs.Screen name="index" options={{ title: 'Inicio' }} />
+      <Tabs.Screen name="club" options={{ title: 'Club' }} />
+      <Tabs.Screen name="order" options={{ title: 'Pedir' }} />
+      <Tabs.Screen name="offers" options={{ title: 'Ofertas' }} />
+      <Tabs.Screen name="more" options={{ title: 'Más' }} />
     </Tabs>
   );
 }

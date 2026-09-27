@@ -31,3 +31,17 @@ export function resolveProductImage(imageKey: string | null | undefined): number
   if (!imageKey) return null;
   return productImageMap[imageKey] ?? null;
 }
+
+/** Thumbnails de baja memoria para cards/listas. */
+export const productThumbnailMap: Record<string, number> = {
+  'bs-bite': require('../../assets/products/bs-bite-01-thumb.jpg'),
+  'sweet-bite': require('../../assets/products/sweet-bite-01-thumb.jpg'),
+  'cheesy-bite': require('../../assets/products/cheesy-bite-01-thumb.jpg'),
+  'mediterranea': require('../../assets/products/mediterranea-01-thumb.jpg'),
+  'mordida-nica': require('../../assets/products/mordida-nica-01-thumb.jpg'),
+};
+
+export function resolveProductThumbnail(productId: string | null | undefined): number | null {
+  if (!productId) return null;
+  return productThumbnailMap[productId] ?? null;
+}

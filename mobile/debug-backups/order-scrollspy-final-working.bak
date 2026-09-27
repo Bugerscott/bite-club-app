@@ -15,16 +15,10 @@ import {
   useWindowDimensions,
 } from 'react-native';
 
-import { BlurView } from 'expo-blur';
-import { Feather } from '@expo/vector-icons';
-import { useRouter } from 'expo-router';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-
 import { ProductCard } from '../../src/components';
 import { mockCategories, mockProducts } from '../../src/mocks';
 import { resolveProductThumbnail } from '../../src/lib/productImages';
 import { colors } from '../../src/theme';
-import { useCart } from '../../src/state';
 
 type Product = (typeof mockProducts)[number];
 
@@ -46,9 +40,6 @@ type ChipLayout = {
 
 export default function OrderScreen() {
   const { width } = useWindowDimensions();
-  const insets = useSafeAreaInsets();
-  const router = useRouter();
-  const { addItem, itemCount } = useCart();
 
   const listRef = useRef<FlatList<MenuRow>>(null);
   const categoryScrollRef = useRef<ScrollView>(null);
@@ -208,7 +199,7 @@ export default function OrderScreen() {
       index,
       animated: true,
       viewPosition: 0,
-      viewOffset: 72,
+      viewOffset: 58,
     });
 
     programmaticScrollTimer.current = setTimeout(() => {
@@ -216,60 +207,9 @@ export default function OrderScreen() {
     }, 850);
   };
 
-
-  function handleQuickAdd(product: Product) {
-    if (!product.available) {
-      return;
-    }
-
-    addItem(
-      {
-        productId: product.id,
-        name: product.name,
-        unitPrice: product.price,
-        imageKey: product.images[0] ?? null,
-        selectedSauce: product.saucesAvailable?.[0],
-        selectedExtras: [],
-      },
-      1
-    );
-  }
   return (
     <View style={styles.container}>
-      <View
-        style={[
-          styles.header,
-          {
-            paddingTop: insets.top + 8,
-          },
-        ]}
-      >
-        <Text style={styles.title}>Pedir</Text>
-
-        <Pressable
-          onPress={() => router.push('/cart')}
-          accessibilityRole="button"
-          accessibilityLabel="Ver pedido"
-          style={({ pressed }) => [
-            styles.cartButton,
-            pressed && styles.cartButtonPressed,
-          ]}
-        >
-          <Feather
-            name="shopping-cart"
-            size={23}
-            color={colors.text}
-          />
-
-          {itemCount > 0 ? (
-            <View style={styles.cartBadge}>
-              <Text style={styles.cartBadgeText}>
-                {itemCount > 99 ? '99+' : itemCount}
-              </Text>
-            </View>
-          ) : null}
-        </Pressable>
-      </View>
+      <Text style={styles.title}>Pedir</Text>
 
       <FlatList
         ref={listRef}
@@ -300,70 +240,60 @@ export default function OrderScreen() {
               index: info.index,
               animated: true,
               viewPosition: 0,
-              viewOffset: 72,
+              viewOffset: 58,
             });
           }, 60);
         }}
         ListHeaderComponent={
-          <View style={styles.stickyShell}>
-            <BlurView
-              intensity={75}
-              tint="light"
-              style={styles.glassCapsule}
+          <View style={styles.stickyContainer}>
+            <ScrollView
+              ref={categoryScrollRef}
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={
+                styles.categoryBarContent
+              }
             >
-              <View style={styles.glassTint}>
-                <ScrollView
-                  ref={categoryScrollRef}
-                  horizontal
-                  showsHorizontalScrollIndicator={false}
-                  contentContainerStyle={
-                    styles.categoryBarContent
-                  }
-                >
-                  {mockCategories.map((category) => {
-                    const isActive =
-                      activeCategory === category.id;
+              {mockCategories.map((category) => {
+                const isActive =
+                  activeCategory === category.id;
 
-                    return (
-                      <Pressable
-                        key={category.id}
-                        onLayout={(event) => {
-                          const {
-                            x,
-                            width: chipWidth,
-                          } = event.nativeEvent.layout;
+                return (
+                  <Pressable
+                    key={category.id}
+                    onLayout={(event) => {
+                      const { x, width: chipWidth } =
+                        event.nativeEvent.layout;
 
-                          chipLayouts.current[category.id] = {
-                            x,
-                            width: chipWidth,
-                          };
-                        }}
-                        onPress={() =>
-                          goToCategory(category.id)
-                        }
-                        style={({ pressed }) => [
-                          styles.categoryChip,
-                          isActive &&
-                            styles.categoryChipActive,
-                          pressed &&
-                            styles.categoryChipPressed,
-                        ]}
-                      >
-                        <Text
-                          style={[
-                            styles.categoryChipText,
-                            isActive &&
-                              styles.categoryChipTextActive,
-                          ]}
-                        >
-                          {category.label}
-                        </Text>
-                      </Pressable>
-                    );
-                  })}
-                </ScrollView>
-              </View>
-            </BlurView>
+                      chipLayouts.current[category.id] = {
+                        x,
+                        width: chipWidth,
+                      };
+                    }}
+                    onPress={() =>
+                      goToCategory(category.id)
+                    }
+                    style={({ pressed }) => [
+                      styles.categoryChip,
+                      isActive &&
+                        styles.categoryChipActive,
+                      pressed &&
+                        styles.categoryChipPressed,
+                    ]}
+                  >
+                    <Text
+                      style={[
+                        styles.categoryChipText,
+                        isActive &&
+                          styles.categoryChipTextActive,
+                      ]}
+                    >
+                      {category.label}
+                    </Text>
+                  </Pressable>
+                );
+              })}
+            </ScrollView>
           </View>
         }
         renderItem={({ item }) => {
@@ -385,17 +315,6 @@ export default function OrderScreen() {
                   item.product.id
                 )}
                 cardWidth={cardWidth}
-                onPress={() =>
-                  router.push({
-                    pathname: '/product/[id]',
-                    params: {
-                      id: item.product.id,
-                    },
-                  })
-                }
-                onAddPress={() =>
-                  handleQuickAdd(item.product)
-                }
               />
             </View>
           );
@@ -411,138 +330,50 @@ const styles = StyleSheet.create({
     backgroundColor: colors.background,
   },
 
-  header: {
-    paddingHorizontal: 20,
-    paddingBottom: 12,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    backgroundColor: colors.background,
-  },
-
   title: {
+    paddingHorizontal: 20,
+    paddingTop: 20,
+    paddingBottom: 12,
     fontSize: 30,
     fontWeight: '700',
     color: colors.text,
-  },
-
-  cartButton: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: 'rgba(255,255,255,0.92)',
-    borderWidth: 1,
-    borderColor: 'rgba(116,141,175,0.18)',
-    shadowColor: '#000000',
-    shadowOffset: {
-      width: 0,
-      height: 3,
-    },
-    shadowOpacity: 0.08,
-    shadowRadius: 8,
-    elevation: 3,
-  },
-
-  cartButtonPressed: {
-    opacity: 0.72,
-    transform: [{ scale: 0.94 }],
-  },
-
-  cartBadge: {
-    position: 'absolute',
-    top: -2,
-    right: -2,
-    minWidth: 19,
-    height: 19,
-    paddingHorizontal: 5,
-    borderRadius: 10,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#E41A17',
-    borderWidth: 2,
-    borderColor: '#FFFFFF',
-  },
-
-  cartBadgeText: {
-    color: '#FFFFFF',
-    fontSize: 10,
-    fontWeight: '700',
-    lineHeight: 12,
-    textAlign: 'center',
   },
 
   content: {
     paddingBottom: 150,
   },
 
-  stickyShell: {
-    backgroundColor: 'transparent',
-    paddingHorizontal: 12,
-    paddingTop: 6,
-    paddingBottom: 8,
-    zIndex: 30,
-  },
-
-  glassCapsule: {
-    borderRadius: 24,
-    overflow: 'hidden',
-
-    borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.82)',
-
-    shadowColor: '#000000',
-    shadowOffset: {
-      width: 0,
-      height: 5,
-    },
-    shadowOpacity: 0.08,
-    shadowRadius: 14,
-
-    elevation: 5,
-  },
-
-  glassTint: {
-    backgroundColor: 'rgba(255,255,255,0.36)',
-    paddingVertical: 8,
+  stickyContainer: {
+    backgroundColor: '#FFFFFF',
+    paddingVertical: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#EEF1F4',
+    zIndex: 20,
   },
 
   categoryBarContent: {
-    paddingHorizontal: 10,
-    gap: 8,
+    paddingHorizontal: 20,
+    gap: 10,
   },
 
   categoryChip: {
-    height: 38,
+    height: 40,
     justifyContent: 'center',
-    paddingHorizontal: 16,
-    borderRadius: 19,
-
-    backgroundColor: 'rgba(255,255,255,0.55)',
-
+    paddingHorizontal: 18,
+    borderRadius: 20,
+    backgroundColor: '#F1F3F6',
     borderWidth: 1,
-    borderColor: 'rgba(116,141,175,0.16)',
+    borderColor: '#E1E6EC',
   },
 
   categoryChipActive: {
     backgroundColor: '#E41A17',
     borderColor: '#E41A17',
-
-    shadowColor: '#E41A17',
-    shadowOffset: {
-      width: 0,
-      height: 4,
-    },
-    shadowOpacity: 0.22,
-    shadowRadius: 8,
-
-    elevation: 3,
   },
 
   categoryChipPressed: {
     transform: [{ scale: 0.96 }],
-    opacity: 0.86,
+    opacity: 0.85,
   },
 
   categoryChipText: {
@@ -557,7 +388,7 @@ const styles = StyleSheet.create({
 
   sectionHeader: {
     paddingHorizontal: 20,
-    paddingTop: 20,
+    paddingTop: 22,
     paddingBottom: 12,
     backgroundColor: '#FFFFFF',
   },
@@ -573,5 +404,3 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
 });
-
-

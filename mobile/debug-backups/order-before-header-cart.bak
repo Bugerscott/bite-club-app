@@ -16,9 +16,7 @@ import {
 } from 'react-native';
 
 import { BlurView } from 'expo-blur';
-import { Feather } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ProductCard } from '../../src/components';
 import { mockCategories, mockProducts } from '../../src/mocks';
@@ -46,9 +44,8 @@ type ChipLayout = {
 
 export default function OrderScreen() {
   const { width } = useWindowDimensions();
-  const insets = useSafeAreaInsets();
   const router = useRouter();
-  const { addItem, itemCount } = useCart();
+  const { addItem } = useCart();
 
   const listRef = useRef<FlatList<MenuRow>>(null);
   const categoryScrollRef = useRef<ScrollView>(null);
@@ -236,40 +233,7 @@ export default function OrderScreen() {
   }
   return (
     <View style={styles.container}>
-      <View
-        style={[
-          styles.header,
-          {
-            paddingTop: insets.top + 8,
-          },
-        ]}
-      >
-        <Text style={styles.title}>Pedir</Text>
-
-        <Pressable
-          onPress={() => router.push('/cart')}
-          accessibilityRole="button"
-          accessibilityLabel="Ver pedido"
-          style={({ pressed }) => [
-            styles.cartButton,
-            pressed && styles.cartButtonPressed,
-          ]}
-        >
-          <Feather
-            name="shopping-cart"
-            size={23}
-            color={colors.text}
-          />
-
-          {itemCount > 0 ? (
-            <View style={styles.cartBadge}>
-              <Text style={styles.cartBadgeText}>
-                {itemCount > 99 ? '99+' : itemCount}
-              </Text>
-            </View>
-          ) : null}
-        </Pressable>
-      </View>
+      <Text style={styles.title}>Pedir</Text>
 
       <FlatList
         ref={listRef}
@@ -411,66 +375,13 @@ const styles = StyleSheet.create({
     backgroundColor: colors.background,
   },
 
-  header: {
-    paddingHorizontal: 20,
-    paddingBottom: 12,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    backgroundColor: colors.background,
-  },
-
   title: {
+    paddingHorizontal: 20,
+    paddingTop: 20,
+    paddingBottom: 8,
     fontSize: 30,
     fontWeight: '700',
     color: colors.text,
-  },
-
-  cartButton: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: 'rgba(255,255,255,0.92)',
-    borderWidth: 1,
-    borderColor: 'rgba(116,141,175,0.18)',
-    shadowColor: '#000000',
-    shadowOffset: {
-      width: 0,
-      height: 3,
-    },
-    shadowOpacity: 0.08,
-    shadowRadius: 8,
-    elevation: 3,
-  },
-
-  cartButtonPressed: {
-    opacity: 0.72,
-    transform: [{ scale: 0.94 }],
-  },
-
-  cartBadge: {
-    position: 'absolute',
-    top: -2,
-    right: -2,
-    minWidth: 19,
-    height: 19,
-    paddingHorizontal: 5,
-    borderRadius: 10,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#E41A17',
-    borderWidth: 2,
-    borderColor: '#FFFFFF',
-  },
-
-  cartBadgeText: {
-    color: '#FFFFFF',
-    fontSize: 10,
-    fontWeight: '700',
-    lineHeight: 12,
-    textAlign: 'center',
   },
 
   content: {
@@ -573,5 +484,4 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
 });
-
 

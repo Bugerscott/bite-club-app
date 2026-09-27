@@ -1,0 +1,266 @@
+﻿import React, { useEffect, useRef, useState } from 'react';
+import {
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+  type LayoutChangeEvent,
+} from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Feather } from '@expo/vector-icons';
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withSequence,
+  withSpring,
+} from 'react-native-reanimated';
+import { Tabs } from 'expo-router';
+
+import {
+  colors,
+  hexToRgba,
+  radius,
+  spacing,
+  spring as motionSpring,
+  typography,
+} from '../../theme';
+import { Badge } from '../Badge';
+import { GlassSurface } from '../glass/GlassSurface';
+import { useCart } from '../../state';
+import { LiquidTabShape } from './LiquidTabShape';
+
+const ICONS: Record<string, keyof typeof Feather.glyphMap> = {
+  index: 'home',
+  club: 'star',
+  order: 'shopping-bag',
+  offers: 'tag',
+  more: 'menu',
+};
+
+const BAR_HEIGHT = 72;
+const BLOB_RADIUS = 18;
+const ICON_SIZE = 20;
+const LABEL_GAP = 10;
+const TAB_CONTENT_HEIGHT = ICON_SIZE + LABEL_GAP + typography.navLabel.lineHeight;
+const ACTIVE_ICON_TOP = (BAR_HEIGHT - TAB_CONTENT_HEIGHT) / 2;
+const ACTIVE_ICON_CENTER_Y = ACTIVE_ICON_TOP + ICON_SIZE / 2;
+
+type LiquidTabBarProps = Parameters<
+  NonNullable<React.ComponentProps<typeof Tabs>['tabBar']>
+>[0];
+
+/** Barra inferior flotante tipo glass con blob rojo contenido. */
+export function LiquidTabBar({ state, descriptors, navigation }: LiquidTabBarProps) {
+  const insets = useSafeAreaInsets();
+  const { itemCount } = useCart();
+  const [barWidth, setBarWidth] = useState(0);
+
+  const tabCount = state.routes.length;
+  const tabWidth = tabCount > 0 && barWidth > 0 ? barWidth / tabCount : 0;
+
+  const cx = useSharedValue<number>(0);
+  const stretch = useSharedValue<number>(1);
+  const initializedRef = useRef(false);
+
+  useEffect(() => {
+    if (barWidth <= 0 || tabWidth <= 0) return;
+
+    const targetX = tabWidth * state.index + tabWidth / 2;
+
+    if (!initializedRef.current) {
+      cx.value = targetX;
+      initializedRef.current = true;
+      return;
+    }
+
+    cx.value = withSpring(targetX, motionSpring.snappy);
+    stretch.value = withSequence(
+      withSpring(1.28, motionSpring.liquid),
+      withSpring(1, motionSpring.liquid),
+    );
+  }, [state.index, barWidth, tabWidth, cx, stretch]);
+
+  const activeIconStyle = useAnimatedStyle(() => ({
+    transform: [{ translateX: cx.value - ICON_SIZE / 2 }],
+  }));
+
+  function handleLayout(event: LayoutChangeEvent) {
+    setBarWidth(event.nativeEvent.layout.width);
+  }
+
+  const activeRoute = state.routes[state.index];
+  const activeIconName = activeRoute ? ICONS[activeRoute.name] ?? 'circle' : 'circle';
+
+  return (
+    <View
+      pointerEvents="box-none"
+      style={[
+        styles.wrapper,
+        { paddingBottom: Math.max(insets.bottom, spacing.sm) },
+      ]}
+    >
+      <GlassSurface
+        style={styles.capsule}
+        borderRadius={radius.pill}
+        intensity={58}
+        tintColor={hexToRgba(colors.secondary, 0.07)}
+      >
+        <View style={styles.stage} onLayout={handleLayout}>
+          {barWidth > 0 ? (
+            <LiquidTabShape
+              width={barWidth}
+              height={BAR_HEIGHT}
+              cx={cx}
+              stretch={stretch}
+              cy={ACTIVE_ICON_CENTER_Y}
+              baseRadius={BLOB_RADIUS}
+              color={colors.primary}
+            />
+          ) : null}
+
+          {barWidth > 0 ? (
+            <Animated.View
+              pointerEvents="none"
+              style={[styles.activeIconWrap, activeIconStyle, { top: ACTIVE_ICON_TOP }]}
+            >
+              <Feather name={activeIconName} size={ICON_SIZE} color={colors.background} style={styles.iconGlow} />
+              {activeRoute?.name === 'order' ? <Badge count={itemCount} /> : null}
+            </Animated.View>
+          ) : null}
+
+          <View style={styles.row}>
+            {state.routes.map((route, index) => {
+              const options = descriptors[route.key]?.options ?? {};
+              const focused = state.index === index;
+              const label = typeof options.title === 'string' ? options.title : route.name;
+              const iconName = ICONS[route.name] ?? 'circle';
+
+              function onPress() {
+                const event = navigation.emit({
+                  type: 'tabPress',
+                  target: route.key,
+                  canPreventDefault: true,
+                });
+
+                if (!focused && !event.defaultPrevented) {
+                  navigation.navigate(route.name);
+                }
+              }
+
+              function onLongPress() {
+                navigation.emit({ type: 'tabLongPress', target: route.key });
+              }
+
+              return (
+                <Pressable
+                  key={route.key}
+                  onPress={onPress}
+                  onLongPress={onLongPress}
+                  accessibilityRole="button"
+                  accessibilityLabel={label}
+                  accessibilityState={{ selected: focused }}
+                  style={styles.tabButton}
+                >
+                  <View style={styles.iconSlot}>
+                    {!focused ? (
+                      <View style={styles.iconContainer}>
+                        <Feather name={iconName} size={ICON_SIZE} color={colors.secondary} style={styles.iconGlow} />
+                        {route.name === 'order' ? <Badge count={itemCount} /> : null}
+                      </View>
+                    ) : null}
+                  </View>
+
+                  <Text
+                    numberOfLines={1}
+                    style={[styles.label, focused && styles.labelActive]}
+                  >
+                    {label}
+                  </Text>
+                </Pressable>
+              );
+            })}
+          </View>
+        </View>
+      </GlassSurface>
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  wrapper: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'transparent',
+    paddingHorizontal: spacing.md,
+    paddingTop: spacing.xs,
+    zIndex: 100,
+  },
+  capsule: {
+    marginBottom: spacing.xs,
+    overflow: 'hidden',
+  },
+  stage: {
+    height: BAR_HEIGHT,
+    position: 'relative',
+  },
+  activeIconWrap: {
+    position: 'absolute',
+    left: 0,
+    width: ICON_SIZE,
+    height: ICON_SIZE,
+    alignItems: 'center',
+    justifyContent: 'center',
+    zIndex: 4,
+  },
+  row: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 0,
+    height: BAR_HEIGHT,
+    flexDirection: 'row',
+    zIndex: 5,
+  },
+  tabButton: {
+    flex: 1,
+    minHeight: 44,
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: LABEL_GAP,
+  },
+  iconSlot: {
+    height: ICON_SIZE,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  iconContainer: {
+    width: ICON_SIZE,
+    height: ICON_SIZE,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  iconGlow: {
+    textShadowColor: 'rgba(255,255,255,0.88)',
+    textShadowOffset: {
+      width: 0,
+      height: 0,
+    },
+    textShadowRadius: 3,
+  },
+  label: {
+    fontFamily: typography.navLabel.fontFamily,
+    fontSize: typography.navLabel.fontSize,
+    lineHeight: typography.navLabel.lineHeight,
+    color: colors.secondary,
+    textAlign: 'center',
+    textShadowColor: 'rgba(255,255,255,0.92)',
+    textShadowOffset: { width: 0, height: 0 },
+    textShadowRadius: 2.5,
+  },
+  labelActive: {
+    color: colors.primary,
+  },
+});
+

@@ -1,0 +1,81 @@
+﻿import React from 'react';
+import {
+  FlatList,
+  StyleSheet,
+  Text,
+  View,
+  useWindowDimensions,
+} from 'react-native';
+
+import { ProductCard } from '../../src/components';
+import { mockProducts } from '../../src/mocks';
+import { colors, spacing } from '../../src/theme';
+import { resolveProductThumbnail } from '../../src/lib/productImages';
+
+export default function OrderScreen() {
+  const { width } = useWindowDimensions();
+
+  const cardWidth = Math.max(
+    260,
+    width - spacing.lg * 2
+  );
+
+  return (
+    <View style={styles.container}>
+      <Text style={styles.title}>Pedir</Text>
+
+      <FlatList
+        data={mockProducts}
+        keyExtractor={(item) => item.id}
+        initialNumToRender={3}
+        maxToRenderPerBatch={3}
+        windowSize={3}
+        removeClippedSubviews={false}
+        contentContainerStyle={styles.content}
+        renderItem={({ item, index }) => {
+          const imageSource =
+            index < 5
+              ? resolveProductThumbnail(item.id)
+              : null;
+
+          return (
+            <View style={styles.cardWrap}>
+              <ProductCard
+                product={item}
+                imageSource={imageSource}
+                cardWidth={cardWidth}
+              />
+            </View>
+          );
+        }}
+      />
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: colors.background,
+  },
+
+  title: {
+    paddingHorizontal: spacing.lg,
+    paddingTop: spacing.lg,
+    paddingBottom: spacing.base,
+    fontSize: 30,
+    fontWeight: '700',
+    color: colors.text,
+  },
+
+  content: {
+    paddingHorizontal: spacing.lg,
+    paddingBottom: 150,
+  },
+
+  cardWrap: {
+    marginBottom: spacing.base,
+  },
+});
+
+

@@ -13,9 +13,10 @@ import {
 import { colors, spacing, typography } from '../../src/theme';
 import { mockProducts, mockOrders, mockMember } from '../../src/mocks';
 import { formatCurrency } from '../../src/utils';
-import { resolveProductImage } from '../../src/lib/productImages';
+import { resolveProductThumbnail } from '../../src/lib/productImages';
 
 const biteClubLogo = require('../../assets/brand/Bite-Club-_logo-primary.png');
+const mordidaNicaHero = require('../../assets/products/mordida-nica-hero.jpg');
 
 export default function HomeScreen() {
   const router = useRouter();
@@ -27,7 +28,7 @@ export default function HomeScreen() {
   ].slice(0, 6);
 
   return (
-    <Screen scroll>
+    <Screen scroll contentStyle={styles.screenContent}>
       <View style={styles.header}>
         <Image source={biteClubLogo} style={styles.logo} resizeMode="contain" accessibilityLabel="Bite Club" />
         <View style={styles.headerActions}>
@@ -50,7 +51,7 @@ export default function HomeScreen() {
             title={starProduct.name}
             subtitle="Algo rico"
             actionLabel="Pedir ahora"
-            imageSource={resolveProductImage(starProduct.images[0])}
+            imageSource={mordidaNicaHero}
             onPress={() => router.push({ pathname: '/product/[id]', params: { id: starProduct.id } })}
           />
         </View>
@@ -77,10 +78,13 @@ export default function HomeScreen() {
           data={mostOrdered}
           keyExtractor={(item) => item.id}
           contentContainerStyle={styles.horizontalList}
+          initialNumToRender={4}
+          maxToRenderPerBatch={4}
+          windowSize={5}
           renderItem={({ item }) => (
             <ProductCard
               product={item}
-              imageSource={resolveProductImage(item.images[0])}
+              imageSource={resolveProductThumbnail(item.id)}
               onPress={() => router.push({ pathname: '/product/[id]', params: { id: item.id } })}
             />
           )}
@@ -93,7 +97,7 @@ export default function HomeScreen() {
           <ProductCard
             product={secondaryFeatured}
             cardWidth={200}
-            imageSource={resolveProductImage(secondaryFeatured.images[0])}
+            imageSource={resolveProductThumbnail(secondaryFeatured.id)}
             onPress={() =>
               router.push({ pathname: '/product/[id]', params: { id: secondaryFeatured.id } })
             }
@@ -136,6 +140,9 @@ export default function HomeScreen() {
 }
 
 const styles = StyleSheet.create({
+  screenContent: {
+    paddingBottom: spacing.xxxl * 3,
+  },
   header: {
     flexDirection: 'row',
     alignItems: 'center',

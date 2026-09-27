@@ -11,6 +11,7 @@ export { radius, type RadiusToken } from './radius';
 export { sizes, type SizeToken } from './sizes';
 export { shadows, type ShadowToken } from './shadows';
 export { typography, fontFamily, type TypographyToken } from './typography';
+export { duration, spring, scale, type MotionDuration, type MotionSpring } from './motion';
 
 import { colors } from './colors';
 import { spacing, screenPaddingHorizontal, sectionGap } from './spacing';
@@ -18,6 +19,7 @@ import { radius } from './radius';
 import { sizes } from './sizes';
 import { shadows } from './shadows';
 import { typography, fontFamily } from './typography';
+import { duration, spring, scale } from './motion';
 
 /** Objeto agregador, útil para pasar "el theme completo" a un solo lugar si hace falta. */
 export const theme = {
@@ -30,6 +32,9 @@ export const theme = {
   shadows,
   typography,
   fontFamily,
+  duration,
+  spring,
+  scale,
 } as const;
 
 export type Theme = typeof theme;

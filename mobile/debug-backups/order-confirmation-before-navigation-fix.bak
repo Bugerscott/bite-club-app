@@ -1,120 +1,59 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Feather } from '@expo/vector-icons';
-
 import { Screen, Button } from '../src/components';
 import { ConfettiCelebration } from '../src/components/motion/ConfettiCelebration';
 import { colors, spacing, typography, radius } from '../src/theme';
 import { useAppState } from '../src/state';
 import { formatCurrency } from '../src/utils';
 
+// Ruta /order-confirmation — instrucciones, sección 23. No se prometen
+// tiempos exactos de entrega.
 export default function OrderConfirmationScreen() {
   const router = useRouter();
   const { currentOrder } = useAppState();
-
-  const [playConfetti] = useState(() =>
-    Boolean(currentOrder)
-  );
-
-  function goHome() {
-    router.dismissAll();
-
-    setTimeout(() => {
-      router.replace('/(tabs)');
-    }, 120);
-  }
-
-  function goTracking() {
-    router.dismissAll();
-
-    setTimeout(() => {
-      router.push('/order-tracking');
-    }, 120);
-  }
-
-  function goToOrders() {
-    router.dismissAll();
-
-    setTimeout(() => {
-      router.push('/order-history');
-    }, 120);
-  }
+  // Confeti único al confirmar el pedido — instrucciones, sección 13. Se
+  // dispara una sola vez (ConfettiCelebration ya protege contra loops/re-render).
+  const [playConfetti] = useState(() => Boolean(currentOrder));
 
   return (
     <Screen>
       <ConfettiCelebration play={playConfetti} />
-
       <View style={styles.content}>
         <View style={styles.iconWrap}>
-          <Feather
-            name="check"
-            size={40}
-            color={colors.background}
-          />
+          <Feather name="check" size={40} color={colors.background} />
         </View>
-
-        <Text style={styles.title}>
-          ¡Pedido confirmado!
-        </Text>
-
+        <Text style={styles.title}>¡Pedido confirmado!</Text>
         {currentOrder ? (
           <>
-            <Text style={styles.orderNumber}>
-              {currentOrder.orderNumber}
-            </Text>
-
+            <Text style={styles.orderNumber}>{currentOrder.orderNumber}</Text>
             <View style={styles.summaryCard}>
               {currentOrder.items.map((item) => (
-                <View
-                  key={item.cartItemId}
-                  style={styles.row}
-                >
+                <View key={item.cartItemId} style={styles.row}>
                   <Text style={styles.rowLabel}>
                     {item.quantity}x {item.name}
                   </Text>
-
-                  <Text style={styles.rowValue}>
-                    {formatCurrency(item.lineTotal)}
-                  </Text>
+                  <Text style={styles.rowValue}>{formatCurrency(item.lineTotal)}</Text>
                 </View>
               ))}
-
               <View style={[styles.row, styles.totalRow]}>
-                <Text style={styles.totalLabel}>
-                  Total
-                </Text>
-
-                <Text style={styles.totalValue}>
-                  {formatCurrency(currentOrder.total)}
-                </Text>
+                <Text style={styles.totalLabel}>Total</Text>
+                <Text style={styles.totalValue}>{formatCurrency(currentOrder.total)}</Text>
               </View>
             </View>
           </>
         ) : (
-          <Text style={styles.mutedText}>
-            No hay un pedido reciente para mostrar.
-          </Text>
+          <Text style={styles.mutedText}>No hay un pedido reciente para mostrar.</Text>
         )}
 
         <View style={styles.actions}>
-          {currentOrder ? (
-            <Button
-              label="Ver seguimiento"
-              onPress={goTracking}
-            />
-          ) : null}
-
-          <Button
-            label="Mis pedidos"
-            variant="secondary"
-            onPress={goToOrders}
-          />
-
+          <Button label="Ver seguimiento" onPress={() => router.push('/order-tracking')} />
           <Button
             label="Volver al inicio"
             variant="secondary"
-            onPress={goHome}
+            onPress={() => router.replace('/(tabs)')}
+            style={styles.secondaryAction}
           />
         </View>
       </View>
@@ -130,7 +69,6 @@ const styles = StyleSheet.create({
     gap: spacing.sm,
     paddingVertical: spacing.xxxl,
   },
-
   iconWrap: {
     width: 72,
     height: 72,
@@ -140,20 +78,16 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginBottom: spacing.sm,
   },
-
   title: {
     fontFamily: typography.h1.fontFamily,
     fontSize: typography.h1.fontSize,
     color: colors.text,
-    textAlign: 'center',
   },
-
   orderNumber: {
     fontFamily: typography.h3.fontFamily,
     fontSize: typography.h3.fontSize,
     color: colors.muted,
   },
-
   summaryCard: {
     width: '100%',
     borderWidth: 1,
@@ -163,54 +97,48 @@ const styles = StyleSheet.create({
     marginTop: spacing.base,
     gap: spacing.xs,
   },
-
   row: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    gap: spacing.sm,
   },
-
   rowLabel: {
     fontFamily: typography.body.fontFamily,
     fontSize: typography.body.fontSize,
     color: colors.text,
     flex: 1,
   },
-
   rowValue: {
     fontFamily: typography.body.fontFamily,
     fontSize: typography.body.fontSize,
     color: colors.text,
   },
-
   totalRow: {
     marginTop: spacing.sm,
     paddingTop: spacing.sm,
     borderTopWidth: 1,
     borderTopColor: colors.divider,
   },
-
   totalLabel: {
     fontFamily: typography.h3.fontFamily,
     fontSize: typography.h3.fontSize,
     color: colors.text,
   },
-
   totalValue: {
     fontFamily: typography.h3.fontFamily,
     fontSize: typography.h3.fontSize,
     color: colors.primary,
   },
-
   mutedText: {
     fontFamily: typography.body.fontFamily,
     fontSize: typography.body.fontSize,
     color: colors.muted,
   },
-
   actions: {
     width: '100%',
     marginTop: spacing.xl,
     gap: spacing.sm,
+  },
+  secondaryAction: {
+    marginTop: 0,
   },
 });

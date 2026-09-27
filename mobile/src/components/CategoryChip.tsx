@@ -1,6 +1,13 @@
-import React from 'react';
-import { Pressable, Text, StyleSheet } from 'react-native';
-import { colors, spacing, radius, typography } from '../theme';
+import React, { useEffect } from 'react';
+import { Pressable, StyleSheet } from 'react-native';
+import Animated, {
+  interpolateColor,
+  useAnimatedStyle,
+  useReducedMotion,
+  useSharedValue,
+  withTiming,
+} from 'react-native-reanimated';
+import { colors, duration, hexToRgba, radius, spacing, typography } from '../theme';
 
 export interface CategoryChipProps {
   label: string;
@@ -8,24 +15,46 @@ export interface CategoryChipProps {
   onPress: () => void;
 }
 
-/** Chip de categoría/filtro — pill (radius 999), estado seleccionado con fondo primary. */
+const AnimatedPressableChip = Animated.createAnimatedComponent(Pressable);
+
+/**
+ * Chip de categoría/filtro — pill (radius 999). Transición animada de fondo
+ * al cambiar de categoría — instrucciones, sección 11 ("fondo rojo animado,
+ * transición de texto, sin parpadeo") y Fase 3.2 sección 16 (chip inactivo
+ * transparente/glass, integrado en la barra, sin bordes grises fuertes). El
+ * color de fondo interpola de forma continua entre transparente/`divider`
+ * (inactivo, deja ver el glass de la barra detrás) y `primary` (activo) en
+ * vez de saltar de un estilo estático a otro.
+ */
 export function CategoryChip({ label, selected = false, onPress }: CategoryChipProps) {
+  const reducedMotion = useReducedMotion();
+  const progress = useSharedValue<number>(selected ? 1 : 0);
+
+  useEffect(() => {
+    progress.value = reducedMotion ? (selected ? 1 : 0) : withTiming(selected ? 1 : 0, { duration: duration.normal });
+  }, [selected, reducedMotion, progress]);
+
+  const animatedContainerStyle = useAnimatedStyle(() => ({
+    backgroundColor: interpolateColor(progress.value, [0, 1], [hexToRgba(colors.background, 0), colors.primary]),
+    borderColor: interpolateColor(progress.value, [0, 1], [colors.divider, colors.primary]),
+  }));
+
+  const animatedTextStyle = useAnimatedStyle(() => ({
+    color: interpolateColor(progress.value, [0, 1], [colors.text, colors.background]),
+  }));
+
   return (
-    <Pressable
+    <AnimatedPressableChip
       onPress={onPress}
       accessibilityRole="button"
       accessibilityLabel={label}
       accessibilityState={{ selected }}
-      style={({ pressed }) => [
-        styles.base,
-        selected ? styles.selected : styles.unselected,
-        pressed && styles.pressed,
-      ]}
+      style={[styles.base, animatedContainerStyle]}
     >
-      <Text style={[styles.label, selected ? styles.labelSelected : styles.labelUnselected]}>
+      <Animated.Text style={[styles.label, animatedTextStyle]} numberOfLines={1}>
         {label}
-      </Text>
-    </Pressable>
+      </Animated.Text>
+    </AnimatedPressableChip>
   );
 }
 
@@ -38,25 +67,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     borderWidth: 1,
   },
-  selected: {
-    backgroundColor: colors.primary,
-    borderColor: colors.primary,
-  },
-  unselected: {
-    backgroundColor: colors.background,
-    borderColor: colors.border,
-  },
-  pressed: {
-    opacity: 0.8,
-  },
   label: {
     fontFamily: typography.caption.fontFamily,
     fontSize: typography.caption.fontSize,
-  },
-  labelSelected: {
-    color: colors.background,
-  },
-  labelUnselected: {
-    color: colors.text,
   },
 });

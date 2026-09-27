@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, Pressable, StyleSheet, Image } from 'react-native';
-import { colors, spacing, radius, typography } from '../theme';
+import { colors, hexToRgba, spacing, radius, typography } from '../theme';
 
 export interface HeroBannerProps {
   title: string;
@@ -10,7 +10,7 @@ export interface HeroBannerProps {
   imageSource?: { uri: string } | number | null;
 }
 
-/** Banner fotográfico principal reutilizable. */
+/** Hero fotográfico sin blur sobre la imagen. */
 export function HeroBanner({ title, subtitle, actionLabel, onPress, imageSource }: HeroBannerProps) {
   return (
     <Pressable
@@ -25,7 +25,8 @@ export function HeroBanner({ title, subtitle, actionLabel, onPress, imageSource 
       ) : (
         <View style={[styles.image, styles.imagePlaceholder]} />
       )}
-      <View style={styles.overlay}>
+
+      <View style={styles.caption}>
         {subtitle ? (
           <Text style={styles.subtitle} numberOfLines={1}>
             {subtitle}
@@ -53,32 +54,41 @@ const styles = StyleSheet.create({
     backgroundColor: colors.divider,
   },
   pressed: {
-    opacity: 0.94,
+    opacity: 0.96,
   },
   image: {
-    ...StyleSheet.absoluteFillObject,
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    bottom: 0,
+    left: 0,
+    width: '100%',
+    height: '100%',
   },
   imagePlaceholder: {
     backgroundColor: colors.divider,
   },
-  overlay: {
-    flex: 1,
-    justifyContent: 'flex-end',
-    padding: spacing.base,
-    backgroundColor: colors.overlay,
+  caption: {
+    position: 'absolute',
+    left: spacing.md,
+    bottom: spacing.md,
+    maxWidth: '68%',
+    borderRadius: radius.button,
+    backgroundColor: hexToRgba(colors.background, 0.9),
+    padding: spacing.md,
   },
   subtitle: {
     fontFamily: typography.promo.fontFamily,
     fontSize: typography.promo.fontSize,
     lineHeight: typography.promo.lineHeight,
-    color: colors.background,
+    color: colors.primary,
     marginBottom: spacing.xs,
   },
   title: {
-    fontFamily: typography.h1.fontFamily,
-    fontSize: typography.h1.fontSize,
-    lineHeight: typography.h1.lineHeight,
-    color: colors.background,
+    fontFamily: typography.h2.fontFamily,
+    fontSize: typography.h2.fontSize,
+    lineHeight: typography.h2.lineHeight,
+    color: colors.text,
   },
   actionPill: {
     alignSelf: 'flex-start',

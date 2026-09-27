@@ -64,7 +64,7 @@ const styles = StyleSheet.create({
   imageWrap: { width: '100%', aspectRatio: 1, borderRadius: radius.card, overflow: 'hidden', backgroundColor: colors.divider },
   image: { width: '100%', height: '100%' },
   imagePlaceholder: { backgroundColor: colors.divider },
-  redeemedOverlay: { ...StyleSheet.absoluteFillObject, backgroundColor: colors.overlay, alignItems: 'center', justifyContent: 'center' },
+  redeemedOverlay: { position: 'absolute', top: 0, right: 0, bottom: 0, left: 0, backgroundColor: colors.overlay, alignItems: 'center', justifyContent: 'center' },
   body: { gap: 2 },
   name: { fontFamily: typography.h3.fontFamily, fontSize: typography.h3.fontSize, lineHeight: typography.h3.lineHeight, color: colors.text },
   pointsRow: { flexDirection: 'row', alignItems: 'center', gap: spacing.xs },

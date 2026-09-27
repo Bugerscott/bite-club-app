@@ -1,4 +1,4 @@
-﻿import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import * as SplashScreen from 'expo-splash-screen';
@@ -17,8 +17,8 @@ export default function RootLayout() {
   const [introFinished, setIntroFinished] = useState(false);
   const [devAuthBypass, setDevAuthBypass] = useState(false);
   const fontsReady = fontsLoaded || !!fontError;
-  // SesiÃ³n real de Supabase Auth â€” instrucciones, secciÃ³n 1: Home nunca debe
-  // aparecer, ni brevemente, antes de resolver si hay sesiÃ³n o no.
+  // Sesión real de Supabase Auth — instrucciones, sección 1: Home nunca debe
+  // aparecer, ni brevemente, antes de resolver si hay sesión o no.
   const { session, loading: sessionLoading } = useSession();
 
   useEffect(() => {
@@ -69,7 +69,7 @@ export default function RootLayout() {
         <Stack.Screen name="checkout" options={{ headerShown: true, title: 'Checkout' }} />
         <Stack.Screen
           name="order-confirmation"
-          options={{ headerShown: true, title: 'ConfirmaciÃ³n', headerBackVisible: false, gestureEnabled: false }}
+          options={{ headerShown: true, title: 'Confirmación', headerBackVisible: false }}
         />
         <Stack.Screen name="order-tracking" options={{ headerShown: true, title: 'Seguimiento' }} />
         <Stack.Screen name="order-history" options={{ headerShown: true, title: 'Mis pedidos' }} />
@@ -92,4 +92,3 @@ const styles = StyleSheet.create({
     backgroundColor: colors.background,
   },
 });
-

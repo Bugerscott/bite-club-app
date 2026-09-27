@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import {
   Pressable,
   Text,
@@ -7,7 +7,8 @@ import {
   type StyleProp,
   type ViewStyle,
 } from 'react-native';
-import { colors, radius, sizes, typography } from '../theme';
+import Animated, { useAnimatedStyle, useReducedMotion, useSharedValue, withSpring } from 'react-native-reanimated';
+import { colors, radius, scale, sizes, spring, typography } from '../theme';
 
 export type ButtonVariant = 'primary' | 'secondary' | 'ghost';
 
@@ -22,11 +23,13 @@ export interface ButtonProps {
 }
 
 /**
- * Botón base de Bite Club — instrucciones, sección "16. SISTEMA DE BOTONES".
- * Variantes: PRIMARY (fondo rojo), SECONDARY (borde rojo, fondo blanco),
- * GHOST (sin fondo ni borde, solo texto). El estado DISABLED se resuelve
- * únicamente con `opacity` — nunca con un color gris nuevo. `loading`
- * reemplaza el label por un spinner sin cambiar el tamaño del botón.
+ * BotÃ³n base de Bite Club â€” instrucciones, secciÃ³n "16. SISTEMA DE BOTONES"
+ * y secciÃ³n 4 (motion: press scale ~0.96â€“0.98, spring de vuelta, sin rebote
+ * exagerado; disabled no anima). Variantes: PRIMARY (fondo rojo), SECONDARY
+ * (borde rojo, fondo blanco), GHOST (sin fondo ni borde, solo texto). El
+ * estado DISABLED se resuelve Ãºnicamente con `opacity` â€” nunca con un color
+ * gris nuevo. `loading` reemplaza el label por un spinner sin cambiar el
+ * tamaÃ±o del botÃ³n.
  *
  * El componente `IconButton` (44x44, circular) es un componente aparte,
  * no una variante de este.
@@ -41,28 +44,46 @@ export function Button({
   style,
 }: ButtonProps) {
   const isDisabled = disabled || loading;
+  const reducedMotion = useReducedMotion();
+  const pressScale = useSharedValue<number>(scale.default);
+
+  const animatedStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: pressScale.value }],
+  }));
 
   return (
-    <Pressable
-      onPress={isDisabled ? undefined : onPress}
-      disabled={isDisabled}
-      accessibilityRole="button"
-      accessibilityLabel={accessibilityLabel ?? label}
-      accessibilityState={{ disabled: isDisabled, busy: loading }}
-      style={({ pressed }) => [
-        styles.base,
-        variantStyles[variant].container,
-        isDisabled && styles.disabled,
-        pressed && !isDisabled && styles.pressed,
-        style,
-      ]}
-    >
-      {loading ? (
-        <ActivityIndicator color={variantStyles[variant].text.color as string} />
-      ) : (
-        <Text style={[styles.label, variantStyles[variant].text]}>{label}</Text>
-      )}
-    </Pressable>
+    <Animated.View style={animatedStyle}>
+      <Pressable
+        onPress={isDisabled ? undefined : onPress}
+        disabled={isDisabled}
+        accessibilityRole="button"
+        accessibilityLabel={accessibilityLabel ?? label}
+        accessibilityState={{ disabled: isDisabled, busy: loading }}
+        onPressIn={() => {
+          if (!isDisabled && !reducedMotion) {
+            pressScale.value = withSpring(0.97, spring.gentle);
+          }
+        }}
+        onPressOut={() => {
+          if (!isDisabled && !reducedMotion) {
+            pressScale.value = withSpring(scale.default, spring.gentle);
+          }
+        }}
+        style={({ pressed }) => [
+          styles.base,
+          variantStyles[variant].container,
+          isDisabled && styles.disabled,
+          pressed && !isDisabled && styles.pressed,
+          style,
+        ]}
+      >
+        {loading ? (
+          <ActivityIndicator color={variantStyles[variant].text.color as string} />
+        ) : (
+          <Text style={[styles.label, variantStyles[variant].text]}>{label}</Text>
+        )}
+      </Pressable>
+    </Animated.View>
   );
 }
 
@@ -104,3 +125,5 @@ const variantStyles: Record<ButtonVariant, { container: ViewStyle; text: { color
     text: { color: colors.text },
   },
 };
+
+

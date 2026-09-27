@@ -1,0 +1,271 @@
+﻿import React, { useMemo, useRef, useState } from 'react';
+import {
+  FlatList,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+  useWindowDimensions,
+} from 'react-native';
+
+import { ProductCard } from '../../src/components';
+import { mockCategories, mockProducts } from '../../src/mocks';
+import { resolveProductThumbnail } from '../../src/lib/productImages';
+import { colors } from '../../src/theme';
+
+type Product = (typeof mockProducts)[number];
+
+type MenuRow =
+  | {
+      type: 'category';
+      categoryId: string;
+      label: string;
+    }
+  | {
+      type: 'product';
+      product: Product;
+    };
+
+export default function OrderScreen() {
+  const { width } = useWindowDimensions();
+
+  const listRef = useRef<FlatList<MenuRow>>(null);
+
+  const [activeCategory, setActiveCategory] = useState(
+    mockCategories[0]?.id ?? ''
+  );
+
+  const cardWidth = Math.max(260, width - 40);
+
+  const menuRows = useMemo<MenuRow[]>(() => {
+    const rows: MenuRow[] = [];
+
+    mockCategories.forEach((category) => {
+      const products = mockProducts.filter(
+        (product) =>
+          product.categoryId === category.id &&
+          product.available
+      );
+
+      if (products.length === 0) {
+        return;
+      }
+
+      rows.push({
+        type: 'category',
+        categoryId: category.id,
+        label: category.label,
+      });
+
+      products.forEach((product) => {
+        rows.push({
+          type: 'product',
+          product,
+        });
+      });
+    });
+
+    return rows;
+  }, []);
+
+  const goToCategory = (categoryId: string) => {
+    const index = menuRows.findIndex(
+      (item) =>
+        item.type === 'category' &&
+        item.categoryId === categoryId
+    );
+
+    if (index < 0) {
+      return;
+    }
+
+    setActiveCategory(categoryId);
+
+    listRef.current?.scrollToIndex({
+      index,
+      animated: true,
+      viewPosition: 0,
+      viewOffset: 56,
+    });
+  };
+
+  return (
+    <View style={styles.container}>
+      <Text style={styles.title}>Pedir</Text>
+
+      <FlatList
+        ref={listRef}
+        data={menuRows}
+        keyExtractor={(item) =>
+          item.type === 'category'
+            ? `category-${item.categoryId}`
+            : `product-${item.product.id}`
+        }
+        initialNumToRender={5}
+        maxToRenderPerBatch={4}
+        windowSize={4}
+        contentContainerStyle={styles.content}
+        stickyHeaderIndices={[0]}
+        onScrollToIndexFailed={(info) => {
+          listRef.current?.scrollToOffset({
+            offset: info.averageItemLength * info.index,
+            animated: true,
+          });
+
+          setTimeout(() => {
+            listRef.current?.scrollToIndex({
+              index: info.index,
+              animated: true,
+              viewPosition: 0,
+              viewOffset: 56,
+            });
+          }, 300);
+        }}
+        ListHeaderComponent={
+          <View style={styles.stickyContainer}>
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={styles.categoryBarContent}
+            >
+              {mockCategories.map((category) => {
+                const isActive =
+                  activeCategory === category.id;
+
+                return (
+                  <Pressable
+                    key={category.id}
+                    onPress={() =>
+                      goToCategory(category.id)
+                    }
+                    style={({ pressed }) => [
+                      styles.categoryChip,
+                      isActive &&
+                        styles.categoryChipActive,
+                      pressed &&
+                        styles.categoryChipPressed,
+                    ]}
+                  >
+                    <Text
+                      style={[
+                        styles.categoryChipText,
+                        isActive &&
+                          styles.categoryChipTextActive,
+                      ]}
+                    >
+                      {category.label}
+                    </Text>
+                  </Pressable>
+                );
+              })}
+            </ScrollView>
+          </View>
+        }
+        renderItem={({ item }) => {
+          if (item.type === 'category') {
+            return (
+              <View style={styles.sectionHeader}>
+                <Text style={styles.sectionTitle}>
+                  {item.label}
+                </Text>
+              </View>
+            );
+          }
+
+          return (
+            <View style={styles.cardWrap}>
+              <ProductCard
+                product={item.product}
+                imageSource={resolveProductThumbnail(
+                  item.product.id
+                )}
+                cardWidth={cardWidth}
+              />
+            </View>
+          );
+        }}
+      />
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: colors.background,
+  },
+
+  title: {
+    paddingHorizontal: 20,
+    paddingTop: 20,
+    paddingBottom: 12,
+    fontSize: 30,
+    fontWeight: '700',
+    color: colors.text,
+  },
+
+  content: {
+    paddingBottom: 150,
+  },
+
+  stickyContainer: {
+    backgroundColor: '#FFFFFF',
+    paddingVertical: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#EEF1F4',
+    zIndex: 20,
+  },
+
+  categoryBarContent: {
+    paddingHorizontal: 20,
+    gap: 10,
+  },
+
+  categoryChip: {
+    height: 40,
+    justifyContent: 'center',
+    paddingHorizontal: 18,
+    borderRadius: 20,
+    backgroundColor: '#F1F3F6',
+    borderWidth: 1,
+    borderColor: '#E1E6EC',
+  },
+
+  categoryChipActive: {
+    backgroundColor: '#E41A17',
+    borderColor: '#E41A17',
+  },
+
+  categoryChipPressed: {
+    opacity: 0.72,
+  },
+
+  categoryChipText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#53657D',
+  },
+
+  categoryChipTextActive: {
+    color: '#FFFFFF',
+  },
+
+  sectionHeader: {
+    paddingHorizontal: 20,
+    paddingTop: 22,
+    paddingBottom: 12,
+    backgroundColor: '#FFFFFF',
+  },
+
+  sectionTitle: {
+    fontSize: 24,
+    fontWeight: '700',
+    color: '#53657D',
+  },
+
+  cardWrap: {
+    paddingHorizontal: 20,
+    marginBottom: 16,
+  },
+});

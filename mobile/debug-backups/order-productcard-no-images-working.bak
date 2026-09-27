@@ -1,0 +1,71 @@
+﻿import React from 'react';
+import {
+  FlatList,
+  StyleSheet,
+  Text,
+  View,
+  useWindowDimensions,
+} from 'react-native';
+
+import { ProductCard } from '../../src/components';
+import { mockProducts } from '../../src/mocks';
+import { colors } from '../../src/theme';
+
+export default function OrderScreen() {
+  const { width } = useWindowDimensions();
+
+  const cardWidth = Math.max(
+    260,
+    width - 40
+  );
+
+  return (
+    <View style={styles.container}>
+      <Text style={styles.title}>Pedir</Text>
+
+      <FlatList
+        data={mockProducts}
+        keyExtractor={(item) => item.id}
+        initialNumToRender={4}
+        maxToRenderPerBatch={4}
+        windowSize={3}
+        removeClippedSubviews
+        contentContainerStyle={styles.content}
+        renderItem={({ item }) => (
+          <View style={styles.cardWrap}>
+            <ProductCard
+              product={item}
+              imageSource={null}
+              cardWidth={cardWidth}
+            />
+          </View>
+        )}
+      />
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: colors.background,
+  },
+
+  title: {
+    paddingHorizontal: 20,
+    paddingTop: 20,
+    paddingBottom: 16,
+    fontSize: 30,
+    fontWeight: '700',
+    color: colors.text,
+  },
+
+  content: {
+    paddingHorizontal: 20,
+    paddingBottom: 150,
+  },
+
+  cardWrap: {
+    marginBottom: 16,
+  },
+});
