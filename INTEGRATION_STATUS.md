@@ -6,7 +6,7 @@ Integrado sin reemplazar pantallas visuales:
 - configuración ESLint para Expo;
 - servicio de autenticación Supabase;
 - servicio tipado de catálogo Supabase;
-- servicio de pedidos mediante RPC atómico e historial autenticado;
+- servicio de pedidos mediante RPC atómico e historial autenticado, con validación local básica y manejo de error de sesión;
 - servicios CRUD administrativos para productos, promociones y recompensas, con verificación de `admin_users` y RLS como autoridad final;
 - frontera segura para Delivery Master: la app móvil no contiene secretos ni acceso directo a su base de datos.
 
