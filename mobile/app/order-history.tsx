@@ -36,6 +36,10 @@ export default function OrderHistoryScreen() {
     router.push('/cart');
   }
 
+  function handleTrack(order: MockOrder) {
+    router.push({ pathname: '/order-tracking', params: { orderId: order.id } });
+  }
+
   if (loading) return <Screen><View style={styles.loading}><ActivityIndicator color={colors.primary} /></View></Screen>;
   if (error === 'AUTH_REQUIRED') return <Screen><EmptyState icon="user" title="Inicia sesión para ver tus pedidos" actionLabel="Volver" onActionPress={() => router.back()} /></Screen>;
   if (error) return <Screen><EmptyState icon="alert-circle" title="No pudimos cargar tus pedidos" /></Screen>;
@@ -50,7 +54,7 @@ export default function OrderHistoryScreen() {
       <Text style={styles.items} numberOfLines={3}>{item.items.map((orderItem) => `${orderItem.quantity}x ${orderItem.name}`).join(', ')}</Text>
       <View style={styles.cardFooter}>
         <Text style={styles.total}>{formatCurrency(item.total)}</Text>
-        {active ? <Button label="Ver seguimiento" onPress={() => router.push('/order-tracking')} /> : <Button label="Repetir" variant="secondary" onPress={() => handleRepeat(item)} />}
+        {active ? <Button label="Ver seguimiento" onPress={() => handleTrack(item)} /> : <Button label="Repetir" variant="secondary" onPress={() => handleRepeat(item)} />}
       </View>
     </View>
   );
