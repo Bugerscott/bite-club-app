@@ -4,11 +4,13 @@ Base visual protegida: `0fa912f`.
 
 Integrado sin reemplazar pantallas visuales:
 - configuración ESLint para Expo;
+- servicio de autenticación Supabase;
 - servicio tipado de catálogo Supabase;
-- servicio de pedidos mediante RPC atómico e historial autenticado.
+- servicio de pedidos mediante RPC atómico e historial autenticado;
+- servicios CRUD administrativos para productos, promociones y recompensas, con verificación de `admin_users` y RLS como autoridad final.
 
 Pendiente de integración selectiva:
-- enlazar UI visual de Pedir/Checkout/Historial con estos servicios;
-- panel administrativo;
+- enlazar la UI visual existente de Pedir/Checkout/Historial con estos servicios sin sustituir diseño;
+- construir las pantallas del panel administrativo sobre los servicios;
 - sincronización Delivery Master;
-- migraciones canónicas ya existentes en `develop/admin-catalog` (no modificar `initial_schema`).
+- incorporar las migraciones canónicas ya existentes en `develop/admin-catalog` sin modificar `initial_schema`.
