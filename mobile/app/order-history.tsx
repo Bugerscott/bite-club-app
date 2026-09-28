@@ -37,7 +37,7 @@ export default function OrderHistoryScreen() {
   }
 
   if (loading) return <Screen><View style={styles.loading}><ActivityIndicator color={colors.primary} /></View></Screen>;
-  if (error === 'AUTH_REQUIRED') return <Screen><EmptyState icon="user" title="Inicia sesión para ver tus pedidos" actionLabel="Iniciar sesión" onActionPress={() => router.push('/auth')} /></Screen>;
+  if (error === 'AUTH_REQUIRED') return <Screen><EmptyState icon="user" title="Inicia sesión para ver tus pedidos" actionLabel="Volver" onActionPress={() => router.back()} /></Screen>;
   if (error) return <Screen><EmptyState icon="alert-circle" title="No pudimos cargar tus pedidos" /></Screen>;
   if (!orders.length) return <Screen><EmptyState icon="shopping-bag" title="Todavía no tienes pedidos" /></Screen>;
 
