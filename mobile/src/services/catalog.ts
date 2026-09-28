@@ -26,6 +26,14 @@ export async function getMenuProducts(): Promise<UiProduct[]> {
   return products.map(toUiProduct).filter((product): product is UiProduct => product !== null);
 }
 
+export async function getMenuProductById(id: string): Promise<UiProduct | null> {
+  if (!id) return null;
+  const { data, error } = await supabase.from('products').select('id,name,description,price,image_url,category,active').eq('id', id).eq('active', true).maybeSingle();
+  if (error) throw error;
+  if (!data) return null;
+  return toUiProduct({ ...data, price: Number(data.price) });
+}
+
 export async function getActiveOffers(): Promise<Offer[]> {
   const now = new Date().toISOString();
   const { data, error } = await supabase.from('offers').select('id,title,description,image_url,original_price,offer_price,valid_from,valid_until,active').eq('active', true).or(`valid_from.is.null,valid_from.lte.${now}`).or(`valid_until.is.null,valid_until.gte.${now}`).order('created_at', { ascending: false });
